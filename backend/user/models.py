@@ -13,3 +13,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, 
         blank=False, 
         null=False)
+    
+    first_name = models.CharField(max_length=50, blank=False, null=False)
+    
+    last_name = models.CharField(max_length=50, blank=False,null=False)
