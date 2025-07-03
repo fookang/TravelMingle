@@ -9,8 +9,15 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    
+  const handleLogin = async () => {
+    setLoading(true)
+
+    try {
+      
+    }
+    catch (error) {
+      
+    }
   };
 
   return (
