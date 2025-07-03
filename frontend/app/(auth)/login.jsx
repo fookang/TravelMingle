@@ -1,6 +1,9 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
+import api from "../../services/api";
+import * as SecureStore from "expo-secure-store";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
 
 const Login = () => {
   const router = useRouter();
@@ -10,13 +13,22 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    setLoading(true)
+    setLoading(true);
 
     try {
-      
-    }
-    catch (error) {
-      
+      const response = await api.post("user/token/", { username, password });
+      SecureStore.setItem(ACCESS_TOKEN, response.data.access);
+      SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
+      setError(false)
+      // router.push("/home");
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.detail || "Invalid credentials");
+      } else {
+        setError("An error occurred. Please try again.")
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,7 +47,7 @@ const Login = () => {
         secureTextEntry={true}
       />
       {error && <Text>{error}</Text>}
-      <Button title="Login" onPress={handleLogin} />
+      <Button title={loading ? "Loging in..." : "Login"} onPress={handleLogin} disabled={loading} />
     </View>
   );
 };
