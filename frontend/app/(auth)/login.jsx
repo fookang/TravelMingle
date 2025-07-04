@@ -19,13 +19,13 @@ const Login = () => {
       const response = await api.post("user/token/", { username, password });
       SecureStore.setItem(ACCESS_TOKEN, response.data.access);
       SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
-      setError(false)
+      setError("");
       // router.push("/home");
     } catch (error) {
       if (error.response && error.response.data) {
         setError(error.response.data.detail || "Invalid credentials");
       } else {
-        setError("An error occurred. Please try again.")
+        setError("An error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -45,9 +45,15 @@ const Login = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
       {error && <Text>{error}</Text>}
-      <Button title={loading ? "Loging in..." : "Login"} onPress={handleLogin} disabled={loading} />
+      <Button
+        title={loading ? "Loging in..." : "Login"}
+        onPress={handleLogin}
+        disabled={loading}
+      />
     </View>
   );
 };

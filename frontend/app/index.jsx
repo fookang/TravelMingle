@@ -12,7 +12,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text>Travel Mingle</Text>
       <Button title="login" onPressIn={() => router.push("/login")} />
     </View>
   );
