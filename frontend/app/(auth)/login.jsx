@@ -21,9 +21,9 @@ const Login = () => {
       SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
       setError("");
       // router.push("/home");
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setError(error.response.data.detail || "Invalid credentials");
+    } catch (err) {
+      if (err.response && err.response.data) {
+        setError(err.response.data.detail || "Invalid credentials");
       } else {
         setError("An error occurred. Please try again.");
       }
@@ -39,6 +39,7 @@ const Login = () => {
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="Password"

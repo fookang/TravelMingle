@@ -14,6 +14,7 @@ export default function Index() {
     >
       <Text>Travel Mingle</Text>
       <Button title="login" onPressIn={() => router.push("/login")} />
+      <Button title="Register" onPressIn={() => router.push("/register")} />
     </View>
   );
 }
