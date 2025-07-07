@@ -2,11 +2,10 @@ from django.db import models
 from django.conf import settings
 
 
-class Itinery(models.Model):
+class Itinerary(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
-        on_delete = models.CASCADE
-        )
+    )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     start_date = models.DateField()
@@ -20,8 +19,9 @@ class Itinery(models.Model):
     
 class ItineraryDay(models.Model):
     itinerary = models.ForeignKey(
-        Itinery, 
-        on_delete = models.CASCADE)
+        Itinerary, 
+        on_delete = models.CASCADE
+    )
     title = models.CharField(max_length=50)
     date = models.DateField()
     

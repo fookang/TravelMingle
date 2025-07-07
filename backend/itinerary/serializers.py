@@ -1,0 +1,46 @@
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from .models import Itinerary, ItineraryDay, Activity
+User = get_user_model()
+
+class ItinerarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Itinerary
+        fields = [
+            'id',
+            'title', 
+            'description', 
+            'start_date', 
+            'end_date',
+            'created_at',
+            'updated_at',
+            'user',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user']
+        
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+        
+        
+class ItineraryDaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItineraryDay
+        fields = [
+            'id',
+            'itinerary',
+            'title',
+            'date'
+        ]
+
+        
+        
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = [
+            'id',
+            'itineraryday',
+            'title',
+            'time'
+        ]

@@ -3,10 +3,11 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from .models import Itinery, ItineryDay, Activity
+from .serializers import ItinerarySerializer, ItineraryDaySerializer, ActivitySerializer
 
 # Create your views here.
 class ItineraryListCreate(generics.ListCreateAPIView):
-    # serializer_class = ItinerarySerializer
+    serializer_class = ItinerarySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
@@ -15,7 +16,7 @@ class ItineraryListCreate(generics.ListCreateAPIView):
     
     
 class ItineraryDayListCreate(generics.ListCreateAPIView):
-    # serializer_class = ItineraryDaySerializer
+    serializer_class = ItineraryDaySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
@@ -25,7 +26,7 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
 
     
 class ActivityListCreate(generics.CreateAPIView):
-    # serializer_class = ActivitySerializer
+    serializer_class = ActivitySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
