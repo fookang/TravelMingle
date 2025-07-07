@@ -22,10 +22,19 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      setError("Please fill in both username and password.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await api.post("user/token/", { username, password });
+      const response = await api.post(
+        "user/token/",
+        { username, password },
+        { timeout: 5000 }
+      );
       SecureStore.setItem(ACCESS_TOKEN, response.data.access);
       SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
       setError("");
@@ -67,7 +76,7 @@ const Login = () => {
           autoCapitalize="none"
           autoCorrect={false}
         />
-        {error && <Text>{error}</Text>}
+        {error && <Text style={styles.errorText}>{error}</Text>}
         <TouchableOpacity
           onPress={handleLogin}
           disabled={loading}
@@ -124,4 +133,8 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "bold",
   },
+  errorText: {
+    color: "red",
+    marginBottom: 10
+  }
 });
