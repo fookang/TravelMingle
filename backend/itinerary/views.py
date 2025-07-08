@@ -39,7 +39,7 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
         serializer.save(itinerary=itinerary)
 
     
-class ActivityListCreate(generics.CreateAPIView):
+class ActivityListCreate(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
