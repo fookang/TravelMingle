@@ -24,13 +24,15 @@ class ItinerarySerializer(serializers.ModelSerializer):
         
         
 class ItineraryDaySerializer(serializers.ModelSerializer):
+    itinerary_title = serializers.CharField(source="itinerary.title",read_only=True)
+    
     class Meta:
         model = ItineraryDay
         fields = [
             'id',
-            'itinerary',
             'title',
-            'date'
+            'date',
+            'itinerary_title'
         ]
 
         
@@ -40,7 +42,6 @@ class ActivitySerializer(serializers.ModelSerializer):
         model = Activity
         fields = [
             'id',
-            'itineraryday',
             'title',
             'time'
         ]

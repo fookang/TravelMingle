@@ -27,7 +27,7 @@ class ItineraryDay(models.Model):
     date = models.DateField()
     
     def __str__(self):
-        return f"{self.itinery.title} - {self.date}"
+        return f"{self.itinerary.title} - {self.date}"
     
 class Activity(models.Model):
     itineraryday = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
