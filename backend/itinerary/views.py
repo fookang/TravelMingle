@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from .models import Itinery, ItineryDay, Activity
+from .models import Itinerary, ItineraryDay, Activity
 from .serializers import ItinerarySerializer, ItineraryDaySerializer, ActivitySerializer
 
 # Create your views here.
@@ -12,7 +12,7 @@ class ItineraryListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Itinery.objects.filter(user=self.request.user)
+        return Itinerary.objects.filter(user=self.request.user)
     
     
 class ItineraryDayListCreate(generics.ListCreateAPIView):
@@ -21,7 +21,7 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return ItineryDay.objects.filter(itinerary=self.kwargs.get("itinerary_id"))
+        return ItineraryDay.objects.filter(itinerary=self.kwargs.get("itinerary_id"))
 
 
     
