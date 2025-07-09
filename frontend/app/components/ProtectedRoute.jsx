@@ -13,6 +13,12 @@ const ProtectedRoute = ({ children }) => {
   const refreshToken = async () => {
     try {
       const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN);
+
+      if (!refreshToken) {
+        setIsAuthorized(false);
+        return;
+      }
+
       const response = await api.post("/user/token/refresh", {
         refresh: refreshToken,
       });
@@ -46,7 +52,9 @@ const ProtectedRoute = ({ children }) => {
         } else {
           setIsAuthorized(true);
         }
-      } catch (err) {}
+      } catch (err) {
+        setIsAuthorized(false);
+      }
     };
     checkAuth();
   }, []);

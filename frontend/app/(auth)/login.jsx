@@ -39,7 +39,7 @@ const Login = () => {
       SecureStore.setItem(ACCESS_TOKEN, response.data.access);
       SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
       setError("");
-      router.push("/(tab)/profile");
+      router.push("/(tabs)/profile");
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.detail || "Invalid credentials");
