@@ -1,10 +1,10 @@
 import { Text, View, StyleSheet, Button, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
 import api from "../../services/api";
 import { jwtDecode } from "jwt-decode";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(null);
@@ -34,34 +34,48 @@ const ProtectedRoute = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = await SecureStore.getItemAsync(ACCESS_TOKEN);
-        if (!token) {
-          setIsAuthorized(false);
-          return;
-        }
-
-        const decoded = jwtDecode(token);
-        const tokenExpiration = decoded.exp;
-        const now = Date.now() / 1000;
-
-        if (tokenExpiration < now) {
-          await refreshToken();
-        } else {
-          setIsAuthorized(true);
-        }
-      } catch (err) {
+  const checkAuth = useCallback(async () => {
+    try {
+      const token = await SecureStore.getItemAsync(ACCESS_TOKEN);
+      if (!token) {
         setIsAuthorized(false);
+        return;
       }
-    };
-    checkAuth();
+
+      const decoded = jwtDecode(token);
+      const tokenExpiration = decoded.exp;
+      const now = Date.now() / 1000;
+
+      if (tokenExpiration < now) {
+        await refreshToken();
+      } else {
+        setIsAuthorized(true);
+      }
+    } catch (err) {
+      setIsAuthorized(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const run = async () => {
+        if (isActive) {
+          await checkAuth();
+        }
+      };
+      run();
+
+      return () => {
+        isActive = false;
+      };
+    }, [checkAuth])
+  );
 
   if (isAuthorized === null) {
     return (
-      <View>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Loading...</Text>
       </View>
     );
@@ -81,8 +95,7 @@ const ProtectedRoute = ({ children }) => {
       </View>
     );
   }
-
-  return children;
+  if (isAuthorized) return children;
 };
 
 const styles = StyleSheet.create({
