@@ -13,6 +13,7 @@ import * as SecureStore from "expo-secure-store";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "../components/Header";
 
 const Login = () => {
   const router = useRouter();
@@ -52,12 +53,7 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>login</Text>
-      </View>
+      <Header title="login" />
 
       <View style={styles.content}>
         <TextInput
@@ -97,14 +93,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    marginLeft: 10,
   },
   content: {
     flex: 1,
