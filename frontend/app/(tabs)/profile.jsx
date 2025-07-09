@@ -10,6 +10,7 @@ import Header from "../components/Header";
 
 const profile = () => {
   const router = useRouter();
+  const [key, setKey] = useState(0)
 
   const handleLogout = () => {
     Alert.alert(
@@ -27,6 +28,7 @@ const profile = () => {
             try {
               await SecureStore.deleteItemAsync(ACCESS_TOKEN);
               await SecureStore.deleteItemAsync(REFRESH_TOKEN);
+              setKey(prev => prev + 1)
               router.replace("/home");
             } catch (err) {
               console.log("Logout error", err)
@@ -41,7 +43,7 @@ const profile = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Profile" />
-      <ProtectedRoute>
+      <ProtectedRoute key={key}>
         <View style={styles.content}>
           <TouchableOpacity
             onPress={() => router.push("/(app)/personalDetails")}

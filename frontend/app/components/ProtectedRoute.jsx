@@ -56,22 +56,26 @@ const ProtectedRoute = ({ children }) => {
     }
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
+  useEffect(() => {
+    checkAuth();
+  }, [])
 
-      const run = async () => {
-        if (isActive) {
-          await checkAuth();
-        }
-      };
-      run();
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     let isActive = true;
 
-      return () => {
-        isActive = false;
-      };
-    }, [checkAuth])
-  );
+  //     const run = async () => {
+  //       if (isActive) {
+  //         await checkAuth();
+  //       }
+  //     };
+  //     run();
+
+  //     return () => {
+  //       isActive = false;
+  //     };
+  //   }, [checkAuth])
+  // );
 
   if (isAuthorized === null) {
     return (
