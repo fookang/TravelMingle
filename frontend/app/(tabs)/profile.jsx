@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
-import api from "../../services/api";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
+import Ionicons from "@react-native-vector-icons/ionicons";
+
 
 const profile = () => {
   const router = useRouter();
@@ -49,35 +50,36 @@ const profile = () => {
             onPress={() => router.push("/(app)/personalDetails")}
             style={styles.button}
           >
-            <Text>Personal details</Text>
+            <Ionicons name="person-outline" style={styles.icons} />
+            <Text style={styles.text}>Personal details</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => router.push("/(app)/passwordAndSecurity")}
             style={styles.button}
           >
-            <Text>Password & Security</Text>
+            <Text style={styles.text}>Password & Security</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => router.push("/(app)/paymentOption")}
             style={styles.button}
           >
-            <Text>Payment Option</Text>
+            <Text style={styles.text}>Payment Option</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => router.push("/(app)/deleteAccount")}
             style={styles.button}
           >
-            <Text>Delete Account</Text>
+            <Text style={styles.text}>Delete Account</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleLogout()}
             style={styles.button}
           >
-            <Text>Logout</Text>
+            <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>
         </View>
       </ProtectedRoute>
@@ -93,6 +95,22 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 20,
+  },
+  button: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icons: {
+    fontSize: 20,
+    marginRight: 12,
+    color: "#333",
+  },
+  text: {
+    fontSize: 16,
+    color: "#333",
   },
 });
