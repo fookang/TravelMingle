@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
         return;
       }
 
-      const response = await api.post("/user/token/refresh", {
+      const response = await api.post("/user/token/refresh/", {
         refresh: refreshToken,
       });
 

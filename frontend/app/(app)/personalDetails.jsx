@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
 import Header from "../components/Header";
@@ -29,16 +29,31 @@ const personalDetails = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Header title="Personal Details" />
-      <View>
-        <View>
-          <Image source={{uri: avatar}}/>
-          <Text>{firstName}</Text>
-          <Text>{lastName}</Text>
+      <View style={styles.content}>
+        <View style={styles.profile}>
+          <Image source={{ uri: avatar }} style={{ width: 100, height: 100 }} />
+          <View style={styles.name}>
+            <Text>{firstName}</Text>
+            <Text>&nbsp;</Text>
+            <Text>{lastName}</Text>
+          </View>
         </View>
-        <Text>{username}</Text>
-        <Text>{email}</Text>
+
+        <View style={styles.detailsContainer}>
+          <Text style={{ color: "grey" }}>Username</Text>
+          <Text>{username}</Text>
+        </View>
+
+        <View style={styles.detailsContainer}>
+          <Text style={{ color: "grey" }}>Email</Text>
+          <Text>{email}</Text>
+        </View>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={{color: '#fff'}}>Edit Profile</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -46,4 +61,29 @@ const personalDetails = () => {
 
 export default personalDetails;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    paddingTop: 20,
+    paddingHorizontal: 20
+  },
+  profile: {
+    alignItems: "center",
+    paddingBottom: 20,
+  },
+  name: {
+    flexDirection: "row",
+  },
+  detailsContainer: {
+    paddingBottom: 15,
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#333",
+    height: 50,
+    borderRadius: 5
+  },
+});

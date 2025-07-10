@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 20
   },
   title: {
     fontSize: 24,

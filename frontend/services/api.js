@@ -38,7 +38,7 @@ api.interceptors.response.use(
         const refreshtoken = await SecureStore.getItemAsync(REFRESH_TOKEN);
         if (refreshtoken) {
           const response = await axios.post(
-            `${Constants.expoConfig.extra.API_URL}/user/token/refresh`,
+            `${Constants.expoConfig.extra.API_URL}/user/token/refresh/`,
             { refresh: refreshtoken }
           );
 

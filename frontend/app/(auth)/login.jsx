@@ -92,13 +92,13 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
   },
   content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: -80,
+    paddingHorizontal: 20,
   },
   input: {
     width: "80%",
@@ -123,6 +123,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });

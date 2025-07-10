@@ -13,7 +13,8 @@ class User(AbstractUser):
         upload_to=user_avatar_path, 
         blank=True, 
         null=True, 
-        default='avatars/default.png')
+        default='avatars/default.png',
+        validators=[])
     
     email = models.EmailField(unique=True, 
         blank=False, 

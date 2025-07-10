@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import api from "../../services/api";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "../components/Header";
 
 const Register = () => {
   const router = useRouter();
@@ -73,12 +74,7 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Register</Text>
-      </View>
+      <Header title='register' />
       <View style={styles.content}>
         <View style={styles.name}>
           <TextInput
@@ -137,15 +133,6 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    marginLeft: 10,
   },
   content: {
     flex: 1,
@@ -153,6 +140,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: -80,
+    paddingHorizontal: 20,
   },
   name: {
     flexDirection: "row",

@@ -18,3 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
         if group_data:
             user.groups.set(group_data)
         return user
+    
+    def validate_avatar(self, value):
+        if value and not value.name.lower().endswith(".png"):
+            raise serializers.ValidationError("Only .png images are allowed.")
+        return value
