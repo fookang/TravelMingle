@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import PasswordChecklist from "react-password-checklist";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,37 +8,44 @@ const changePassword = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("")
   const [ConfirmNewPassword, setConfirmNewPassword] = useState("")
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Header title="Change Password" />
-      <View>
-        <View>
+      <View style={styles.content}>
+        <View style={styles.section}>
           <Text>Current Password: </Text>
           <TextInput
             secureTextEntry
             value={password}
-            placeholder="Enter Current Password"
+            placeholder=""
             onChangeText={setPassword}
+            style={styles.input}
           />
         </View>
-        <View>
+        <View style={styles.section}>
           <Text>New Password: </Text>
           <TextInput
             secureTextEntry
             value={newPassword}
-            placeholder="Enter New Password"
+            placeholder=""
             onChangeText={setNewPassword}
+            style={styles.input}
           />
         </View>
-        <View>
+        <View style={styles.section}>
           <Text>Confirm New Password: </Text>
           <TextInput
             secureTextEntry
             value={ConfirmNewPassword}
-            placeholder="Confirm New Password"
+            placeholder=""
             onChangeText={setConfirmNewPassword}
+            style={styles.input}
           />
         </View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={{ color: "#fff" }}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -46,4 +53,30 @@ const changePassword = () => {
 
 export default changePassword;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  section: {
+    paddingBottom: 20
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 40,
+    padding: 10,
+    borderColor: '#ccc'
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#333",
+    height: 50,
+    borderRadius: 5,
+  },
+});
