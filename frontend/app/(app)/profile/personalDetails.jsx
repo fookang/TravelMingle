@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import api from "../../services/api";
-import Header from "../components/Header";
+import api from "../../../services/api";
+import Header from "../../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const personalDetails = () => {

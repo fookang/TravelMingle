@@ -8,10 +8,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import Ionicons from "@react-native-vector-icons/ionicons";
 
-
 const profile = () => {
   const router = useRouter();
-  const [key, setKey] = useState(0)
+  const [key, setKey] = useState(0);
 
   const handleLogout = () => {
     Alert.alert(
@@ -29,11 +28,11 @@ const profile = () => {
             try {
               await SecureStore.deleteItemAsync(ACCESS_TOKEN);
               await SecureStore.deleteItemAsync(REFRESH_TOKEN);
-              setKey(prev => prev + 1)
+              setKey((prev) => prev + 1);
               router.replace("/home");
             } catch (err) {
-              console.log("Logout error", err)
-              Alert.alert("Logout failed", "Please try again.")
+              console.log("Logout error", err);
+              Alert.alert("Logout failed", "Please try again.");
             }
           },
         },
@@ -47,7 +46,7 @@ const profile = () => {
       <ProtectedRoute key={key}>
         <View style={styles.content}>
           <TouchableOpacity
-            onPress={() => router.push("/(app)/personalDetails")}
+            onPress={() => router.push("/(app)/profile/personalDetails")}
             style={styles.button}
           >
             <Ionicons name="person-outline" style={styles.icons} />
@@ -55,23 +54,26 @@ const profile = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(app)/passwordAndSecurity")}
+            onPress={() => router.push("/(app)/profile/passwordAndSecurity")}
             style={styles.button}
           >
+            <Ionicons name="lock-closed-outline" style={styles.icons} />
             <Text style={styles.text}>Password & Security</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(app)/paymentOption")}
+            onPress={() => router.push("/(app)/profile/paymentOption")}
             style={styles.button}
           >
+            <Ionicons name="card-outline" style={styles.icons} />
             <Text style={styles.text}>Payment Option</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(app)/deleteAccount")}
+            onPress={() => router.push("/(app)/profile/deleteAccount")}
             style={styles.button}
           >
+            <Ionicons name="trash-outline" style={styles.icons} />
             <Text style={styles.text}>Delete Account</Text>
           </TouchableOpacity>
 
@@ -79,6 +81,7 @@ const profile = () => {
             onPress={() => handleLogout()}
             style={styles.button}
           >
+            <Ionicons name="log-out-outline" style={styles.icons} />
             <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>
         </View>
