@@ -1,13 +1,21 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
-import PasswordChecklist from "react-password-checklist";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
+import PasswordCheckList from "../../components/PasswordCheckList";
 
 const changePassword = () => {
   const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("")
-  const [ConfirmNewPassword, setConfirmNewPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("");
+  const [ConfirmNewPassword, setConfirmNewPassword] = useState("");
+  const [valid, setValid] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +51,16 @@ const changePassword = () => {
             style={styles.input}
           />
         </View>
-        <TouchableOpacity style={styles.button}>
+        <PasswordCheckList
+          password={newPassword}
+          confirmPassword={ConfirmNewPassword}
+          checkValidation={setValid}
+        />
+        <TouchableOpacity
+          style={styles.button}
+          disabled={!valid}
+          onPress={() => console.log("submit")}
+        >
           <Text style={{ color: "#fff" }}>Submit</Text>
         </TouchableOpacity>
       </View>
@@ -55,7 +72,7 @@ export default changePassword;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: {
     flex: 1,
@@ -63,14 +80,14 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   section: {
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   input: {
     borderWidth: 1,
     borderRadius: 5,
     height: 40,
     padding: 10,
-    borderColor: '#ccc'
+    borderColor: "#ccc",
   },
   button: {
     justifyContent: "center",
