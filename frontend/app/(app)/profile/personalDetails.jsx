@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../../services/api";
 import Header from "../../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 const personalDetails = () => {
   const [username, setUsername] = useState("");
@@ -10,6 +11,7 @@ const personalDetails = () => {
   const [avatar, setAvatar] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const router = useRouter();
 
   const getPersonalDetail = async () => {
     try {
@@ -51,8 +53,22 @@ const personalDetails = () => {
           <Text>{email}</Text>
         </View>
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={{color: '#fff'}}>Edit Profile</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            router.push({
+              pathname: "profile/editProfile",
+              params: {
+                username,
+                email,
+                avatar,
+                firstName,
+                lastName,
+              },
+            })
+          }
+        >
+          <Text style={{ color: "#fff" }}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -67,7 +83,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   profile: {
     alignItems: "center",
@@ -84,6 +100,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#333",
     height: 50,
-    borderRadius: 5
+    borderRadius: 5,
   },
 });

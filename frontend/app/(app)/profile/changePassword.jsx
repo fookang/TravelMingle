@@ -10,12 +10,33 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import PasswordCheckList from "../../components/PasswordCheckList";
+import api from "../../../services/api";
 
 const changePassword = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [ConfirmNewPassword, setConfirmNewPassword] = useState("");
   const [valid, setValid] = useState(false);
+
+  const handleChangePassword = async () => {
+    try {
+      const response = await api.patch("user/update/", {
+        old_password: password,
+        password: newPassword,
+      });
+      if (response.status === 200) {
+        Alert.alert("Success", "Your password has been reset successfully");
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert(
+        "Error",
+        "Failed to reset password. Please check your connection or try again."
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +80,10 @@ const changePassword = () => {
         <TouchableOpacity
           style={styles.button}
           disabled={!valid}
-          onPress={() => console.log("submit")}
+          onPress={() => {
+            console.log("submit");
+            handleChangePassword();
+          }}
         >
           <Text style={{ color: "#fff" }}>Submit</Text>
         </TouchableOpacity>
