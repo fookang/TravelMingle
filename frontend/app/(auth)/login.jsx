@@ -53,7 +53,7 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="login" />
+      <Header title="Login" />
 
       <View style={styles.content}>
         <TextInput
@@ -72,7 +72,9 @@ const Login = () => {
           autoCapitalize="none"
           autoCorrect={false}
         />
+
         {error && <Text style={styles.errorText}>{error}</Text>}
+
         <TouchableOpacity
           onPress={handleLogin}
           disabled={loading}
@@ -80,6 +82,15 @@ const Login = () => {
         >
           <Text style={styles.buttonText}>
             {loading ? "Logging in..." : "Login"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.push("/register")}
+          style={styles.linkButton}
+        >
+          <Text style={styles.linkButtonText}>
+            Don't have an account? Register
           </Text>
         </TouchableOpacity>
       </View>
@@ -124,5 +135,13 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     marginBottom: 10,
+  },
+  linkButton: {
+    marginTop: 15,
+  },
+
+  linkButtonText: {
+    color: "#007bff",
+    fontWeight: "bold",
   },
 });

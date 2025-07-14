@@ -1,21 +1,24 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
-import React from 'react'
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from 'expo-router';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const Home = () => {
   const router = useRouter();
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Text>Travel Mingle</Text>
-      <Button title="login" onPress={() => router.push("/login")} />
-      <Button title="Register" onPress={() => router.push("/register")} />
-    </View>
+      <ProtectedRoute>
+        <Text>Travel Mingle</Text>
+
+        
+      </ProtectedRoute>
+    </SafeAreaView>
   );
 }
 

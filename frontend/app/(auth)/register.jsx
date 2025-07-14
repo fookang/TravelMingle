@@ -12,33 +12,36 @@ import api from "../../services/api";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
+import PasswordCheckList from "../components/PasswordCheckList";
 
 const Register = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [valid, setValid] = useState(false)
 
   const handleRegister = async () => {
     if (
       !username.trim() ||
       !password.trim() ||
-      !validEmail ||
+      !email.trim() ||
       !firstName.trim() ||
       !lastName.trim()
     ) {
-      setError("Please fill in all required field");
+      setError("Please fill in all required fields");
       return;
     }
 
     const emailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailCheck.test(email)) {
-      setError("Please enter a vlid email address");
+      setError("Please enter a valid email address");
       return;
     }
 
@@ -74,7 +77,7 @@ const Register = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title='register' />
+      <Header title="Register" />
       <View style={styles.content}>
         <View style={styles.name}>
           <TextInput
@@ -113,10 +116,24 @@ const Register = () => {
           autoCorrect={false}
           style={styles.input}
         />
+        <TextInput
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={styles.input}
+        />
+        <PasswordCheckList
+          password={password}
+          confirmPassword={confirmPassword}
+          checkValidation={setValid}
+        />
         {error && <Text style={styles.errorText}>{error}</Text>}
         <TouchableOpacity
           onPress={handleRegister}
-          disabled={loading}
+          disabled={loading && valid}
           style={[styles.button, loading && styles.buttonDisabled]}
         >
           <Text style={styles.buttonText}>

@@ -52,7 +52,7 @@ const PasswordCheckList = ({ password, confirmPassword, checkValidation }) => {
           style={passwordMatch ? styles.check : styles.notCheck}
         />
         <Text style={passwordMatch ? styles.check : styles.notCheck}>
-          Passwords match
+          Passwords must match
         </Text>
       </View>
     </View>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 2,
   },
   check: {
     color: "green",
