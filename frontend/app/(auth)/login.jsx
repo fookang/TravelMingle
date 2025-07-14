@@ -3,17 +3,16 @@ import {
   Text,
   TextInput,
   View,
-  Button,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import api from "../../services/api";
 import * as SecureStore from "expo-secure-store";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
-import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
   const router = useRouter();
@@ -21,6 +20,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!username.trim() || !password.trim()) {
@@ -36,9 +36,9 @@ const Login = () => {
         { username, password },
         { timeout: 5000 }
       );
-      SecureStore.setItem(ACCESS_TOKEN, response.data.access);
-      SecureStore.setItem(REFRESH_TOKEN, response.data.refresh);
-      setError("");
+      await SecureStore.setItemAsync(ACCESS_TOKEN, response.data.access);
+      await SecureStore.setItemAsync(REFRESH_TOKEN, response.data.refresh);
+      login();
       router.push("/(tabs)/profile");
     } catch (err) {
       if (err.response && err.response.data) {
@@ -79,7 +79,7 @@ const Login = () => {
           style={[styles.button, loading && styles.buttonDisabled]}
         >
           <Text style={styles.buttonText}>
-            {loading ? "Loging in..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </Text>
         </TouchableOpacity>
       </View>
