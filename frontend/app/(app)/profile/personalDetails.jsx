@@ -17,7 +17,13 @@ const personalDetails = () => {
     try {
       const response = await api.get("user/");
       console.log(response.data);
-      const { username, email, avatar, firstName, lastName } = response.data;
+      const {
+        username,
+        email,
+        avatar,
+        first_name: firstName,
+        last_name: lastName,
+      } = response.data;
       setUsername(username);
       setEmail(email);
       setAvatar(avatar);

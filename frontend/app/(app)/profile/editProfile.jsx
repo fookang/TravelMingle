@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,20 +28,26 @@ const editProfile = () => {
     if (params.username) setUsername(params.username);
     if (params.email) setEmail(params.email);
     if (params.avatar) setAvatar(params.avatar);
-  }, [params]);
+  }, []);
+
+  useEffect(() => {
+    if (avatar) {
+      console.log("✅ Avatar state updated:", avatar);
+    }
+  }, [avatar]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "images",
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
-
-    console.log(result);
-
-    if (!result.canceled) {
+    const { canceled } = result;
+    if (!canceled) {
       setAvatar(result.assets[0].uri);
+      console.log("ImagePicker result:", result);
+      console.log(result.assets[0].uri);
     }
   };
 
@@ -50,11 +57,14 @@ const editProfile = () => {
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
 
-      formData.append("avatar", {
-        uri: avatar,
-        name: "avatar.jpg",
-        type: "image/jpeg"
-      });
+      if (avatar && avatar.startsWith("file")) {
+        formData.append("avatar", {
+          uri: avatar,
+          name: "avatar.jpg",
+          type: "image/jpeg",
+        });
+        console.log("Picture uploaded");
+      }
 
       const response = await api.patch("user/update/", formData, {
         headers: {
@@ -79,13 +89,12 @@ const editProfile = () => {
   return (
     <SafeAreaView>
       <Header title="Edit Profile" />
-      <TouchableOpacity onPress={() => pickImage()}>
+      <TouchableOpacity onPress={pickImage}>
         <Text>Select New Avatar</Text>
       </TouchableOpacity>
       <View style={styles.section}>
         <Text>First Name: </Text>
         <TextInput
-          secureTextEntry
           value={firstName}
           placeholder=""
           onChangeText={setFirstName}
@@ -95,7 +104,6 @@ const editProfile = () => {
       <View style={styles.section}>
         <Text>Last Name: </Text>
         <TextInput
-          secureTextEntry
           value={lastName}
           placeholder=""
           onChangeText={setLastName}

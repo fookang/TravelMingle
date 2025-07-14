@@ -4,6 +4,8 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(write_only=True, required=False)
+    avatar = serializers.ImageField(required=False, allow_null=True)
+
     
     class Meta:
         model = User
@@ -23,8 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     
     def validate_avatar(self, value):
-        if value and not value.name.lower().endswith(".png"):
-            raise serializers.ValidationError("Only .png images are allowed.")
+        
+        if not value or isinstance(value, str):
+            return value
+        
+        if hasattr(value, 'name'):
+            if value and not value.name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                raise serializers.ValidationError("Only .png, .jpg, or .jpeg images are allowed.")
         return value
     
     def validate(self, data):
