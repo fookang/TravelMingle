@@ -45,7 +45,7 @@ const editProfile = () => {
     });
     const { canceled } = result;
     if (!canceled) {
-      setAvatar(result.assets[0].uri);
+      setAvatar(result.assets[0]);
       console.log("ImagePicker result:", result);
       console.log(result.assets[0].uri);
     }
@@ -59,9 +59,9 @@ const editProfile = () => {
 
       if (avatar && avatar.startsWith("file")) {
         formData.append("avatar", {
-          uri: avatar,
-          name: "avatar.jpg",
-          type: "image/jpeg",
+          uri: avatar.uri,
+          name: avatar.fileName,
+          type: avatar.mimeType,
         });
         console.log("Picture uploaded");
       }

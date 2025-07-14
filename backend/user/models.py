@@ -27,7 +27,7 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         try:
             user = User.objects.get(id=self.id)
-            if user.avatar != self.avatar and user.avatar != 'avatars/default.svg':
+            if user.avatar != self.avatar and user.avatar != 'avatars/default.png':
                 user.avatar.delete(save=False)
         except User.DoesNotExist:
             pass
