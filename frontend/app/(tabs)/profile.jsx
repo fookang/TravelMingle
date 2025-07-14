@@ -14,7 +14,6 @@ const profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Profile" />
       <ProtectedRoute>
         <View style={styles.content}>
           <TouchableOpacity
