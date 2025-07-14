@@ -125,15 +125,17 @@ const Register = () => {
           autoCorrect={false}
           style={styles.input}
         />
-        <PasswordCheckList
-          password={password}
-          confirmPassword={confirmPassword}
-          checkValidation={setValid}
-        />
+        <View style={{alignItems: "flex-start", width: '80%'}}>
+          <PasswordCheckList
+            password={password}
+            confirmPassword={confirmPassword}
+            checkValidation={setValid}
+          />
+        </View>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <TouchableOpacity
           onPress={handleRegister}
-          disabled={loading && valid}
+          disabled={loading || !valid}
           style={[styles.button, loading && styles.buttonDisabled]}
         >
           <Text style={styles.buttonText}>

@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import api from "../../../services/api";
 import Header from "../../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 
 const personalDetails = () => {
   const [username, setUsername] = useState("");
@@ -32,9 +33,11 @@ const personalDetails = () => {
     } catch (err) {}
   };
 
-  useEffect(() => {
-    getPersonalDetail();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getPersonalDetail();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>

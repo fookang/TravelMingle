@@ -72,8 +72,9 @@ const editProfile = () => {
         },
       });
       if (response.status === 200) {
-        Alert.alert("Success", "Your profile has been updated successfully");
-        router.replace("/profile/personalDetails");
+        Alert.alert("Success", "Your profile has been updated successfully", [
+          { text: "Ok", onPress: () => router.back() },
+        ]);
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
