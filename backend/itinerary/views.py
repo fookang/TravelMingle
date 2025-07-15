@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 class ItineraryListCreate(generics.ListCreateAPIView):
     serializer_class = ItinerarySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
@@ -22,7 +21,6 @@ class ItineraryListCreate(generics.ListCreateAPIView):
     
 class ItineraryDayListCreate(generics.ListCreateAPIView):
     serializer_class = ItineraryDaySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
@@ -41,7 +39,6 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
     
 class ActivityListCreate(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):

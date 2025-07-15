@@ -125,7 +125,7 @@ const Register = () => {
           autoCorrect={false}
           style={styles.input}
         />
-        <View style={{alignItems: "flex-start", width: '80%'}}>
+        <View style={{alignItems: "flex-start", width: '80%', marginBottom: 10}}>
           <PasswordCheckList
             password={password}
             confirmPassword={confirmPassword}
