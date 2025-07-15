@@ -47,7 +47,15 @@ const Home = () => {
             <TouchableOpacity
               key={item.id}
               style={styles.content}
-              // onPress={() => router.push(`/itineraries/[${item.id}]`)}
+              onPress={() => {
+                router.push({
+                  pathname: `/itineraries/[${item.id}]`,
+                  params: {
+                    id: item.id.toString(),
+                    title: item.title,
+                  },
+                });
+              }}
             >
               <Text style={styles.item}>{item.title}</Text>
               <View>
