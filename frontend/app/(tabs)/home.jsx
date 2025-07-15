@@ -24,7 +24,7 @@ const Home = () => {
       const sorted = response.data.sort(
         (a, b) => new Date(a.start_date) - new Date(b.start_date)
       );
-      console.log(response);
+      console.log(response.data);
       setItineraries(sorted);
     } catch (error) {
       console.error("Failed to fetch itineraries:", error);
@@ -49,7 +49,7 @@ const Home = () => {
               style={styles.content}
               onPress={() => {
                 router.push({
-                  pathname: `/itineraries/[${item.id}]`,
+                  pathname: `/itineraries/[id]`,
                   params: {
                     id: item.id.toString(),
                     title: item.title,
