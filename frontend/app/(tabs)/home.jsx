@@ -5,10 +5,12 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { useEffect, useCallback, useState } from "react";
 import api from "../../services/api";
 import { useFocusEffect } from "expo-router";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const Home = () => {
   const router = useRouter();
   const [itineraries, setItineraries] = useState([]);
+
   const formatDate = (datestr) => {
     const date = new Date(datestr);
     const day = String(date.getDate()).padStart(2, "0");
@@ -40,8 +42,17 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ProtectedRoute>
-        <Text style={styles.header}>Welcome back</Text>
-
+        <View style={styles.header}>
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Welcome back</Text>
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/(app)/itineraries/createItinerary");
+            }}
+            style={styles.button}
+          >
+            <Icon name="add" size={15} color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.itineraryList}>
           {itineraries.map((item) => (
             <TouchableOpacity
@@ -78,17 +89,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    fontSize: 20,
-    fontWeight: "bold",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#DDDDDD",
+    paddingHorizontal: 15,
+    paddingVertical: 7,
+    borderRadius: 10,
   },
   content: {
-    marginBottom: 10,
+    marginBottom: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#dbd5d5ff",
+    backgroundColor: "#F8F8F8",
     borderRadius: 8,
   },
   itineraryList: {
