@@ -7,23 +7,60 @@ import api from "../../services/api";
 import { useFocusEffect } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { formatDate } from "../../constants/fomatDate";
+import { Ionicons } from "@expo/vector-icons";
 
 const Home = () => {
   const router = useRouter();
-  const [itineraries, setItineraries] = useState([]);
+  const [upcomingItineraries, setUpcomingItineraries] = useState([]);
+  const [pastItineraries, setPastItineraries] = useState([]);
+  const [displayPast, setDisplayPast] = useState(false);
+  const [displayUpcoming, setDisplayUpcoming] = useState(false);
 
   const getItinerary = async () => {
     try {
       const response = await api.get("itinerary/");
-      const sorted = response.data.sort(
-        (a, b) => new Date(a.start_date) - new Date(b.start_date)
-      );
-      console.log(response.data);
-      setItineraries(sorted);
+
+      const today = new Date();
+
+      const upcoming = response.data
+        .filter((item) => new Date(item.end_date) >= today.setHours(0, 0, 0, 0))
+        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+      const past = response.data
+        .filter((item) => new Date(item.end_date) < today.setHours(0, 0, 0, 0))
+        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+      setUpcomingItineraries(upcoming);
+      setPastItineraries(past);
     } catch (error) {
       console.error("Failed to fetch itineraries:", error);
     }
   };
+
+  const renderItem = (item) => (
+    <TouchableOpacity
+      key={item.id}
+      style={styles.content}
+      onPress={() => {
+        router.push({
+          pathname: `/itineraries/[id]`,
+          params: {
+            id: item.id.toString(),
+            title: item.title,
+          },
+        });
+      }}
+    >
+      <Text style={styles.item}>{item.title}</Text>
+      <View>
+        <Text style={styles.item}>{formatDate(item.start_date)}</Text>
+        <Text style={styles.item}>{formatDate(item.end_date)}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const toggleDisplayPast = () => setDisplayPast(!displayPast);
+  const toggleDisplayUpcoming = () => setDisplayUpcoming(!displayUpcoming);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,27 +83,39 @@ const Home = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.itineraryList}>
-          {itineraries.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.content}
-              onPress={() => {
-                router.push({
-                  pathname: `/itineraries/[id]`,
-                  params: {
-                    id: item.id.toString(),
-                    title: item.title,
-                  },
-                });
-              }}
-            >
-              <Text style={styles.item}>{item.title}</Text>
-              <View>
-                <Text style={styles.item}>{formatDate(item.start_date)}</Text>
-                <Text style={styles.item}>{formatDate(item.end_date)}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {upcomingItineraries.length > 0 && (
+            <>
+              <TouchableOpacity
+                style={styles.sectionHeader}
+                onPress={() => toggleDisplayUpcoming()}
+              >
+                <Text style={styles.sectionContent}>Upcoming</Text>
+                <Ionicons
+                  name={
+                    displayUpcoming ? "caret-up-outline" : "caret-down-outline"
+                  }
+                  style={styles.sectionContent}
+                />
+              </TouchableOpacity>
+              {displayUpcoming &&
+                upcomingItineraries.map((item) => renderItem(item))}
+            </>
+          )}
+          {pastItineraries.length > 0 && (
+            <>
+              <TouchableOpacity
+                style={styles.sectionHeader}
+                onPress={() => toggleDisplayPast()}
+              >
+                <Text style={styles.sectionContent}>Past</Text>
+                <Ionicons
+                  name={displayPast ? "caret-up-outline" : "caret-down-outline"}
+                  style={styles.sectionContent}
+                />
+              </TouchableOpacity>
+              {displayPast && pastItineraries.map((item) => renderItem(item))}
+            </>
+          )}
         </View>
       </ProtectedRoute>
     </SafeAreaView>
@@ -108,5 +157,16 @@ const styles = StyleSheet.create({
   item: {
     fontSize: 16,
     paddingVertical: 4,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  sectionContent: {
+    fontSize: 18,
+    fontWeight: "bold",
+    paddingHorizontal: 10,
   },
 });

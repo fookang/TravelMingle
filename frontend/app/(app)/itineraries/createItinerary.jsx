@@ -79,7 +79,7 @@ const createItinerary = () => {
       <View style={styles.content}>
         <View style={styles.input}>
           <Text>
-            Title <Text style={styles.required}>*</Text>
+            Title: <Text style={styles.required}>*</Text>
           </Text>
           <TextInput
             placeholder="Title"
@@ -105,7 +105,7 @@ const createItinerary = () => {
         <View>
           <TouchableOpacity onPress={() => setStartDateButton(true)}>
             <View style={styles.input}>
-              <Text style={styles.label}>Select Start Date:</Text>
+              <Text style={styles.label}>Start Date:</Text>
               <Text style={styles.dateValue}>
                 {displayDate(start_date) || "Today"}
               </Text>
@@ -130,7 +130,7 @@ const createItinerary = () => {
         <View>
           <TouchableOpacity onPress={() => setEndDateButton(true)}>
             <View style={styles.input}>
-              <Text style={styles.label}>Select End Date:</Text>
+              <Text style={styles.label}>End Date:</Text>
               <Text style={styles.dateValue}>
                 {displayDate(end_date) || "Today"}
               </Text>
