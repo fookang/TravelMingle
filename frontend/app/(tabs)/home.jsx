@@ -6,19 +6,11 @@ import { useEffect, useCallback, useState } from "react";
 import api from "../../services/api";
 import { useFocusEffect } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { formatDate } from "../../constants/fomatDate";
 
 const Home = () => {
   const router = useRouter();
   const [itineraries, setItineraries] = useState([]);
-
-  const formatDate = (datestr) => {
-    const date = new Date(datestr);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "short" });
-    const year = date.getFullYear();
-
-    return `${day} ${month} ${year}`;
-  };
 
   const getItinerary = async () => {
     try {
