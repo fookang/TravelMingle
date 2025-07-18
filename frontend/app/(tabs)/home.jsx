@@ -43,10 +43,11 @@ const Home = () => {
       style={styles.content}
       onPress={() => {
         router.push({
-          pathname: `/itineraries/[id]`,
+          pathname: `itineraries/${item.id}`,
           params: {
             id: item.id.toString(),
             title: item.title,
+            start_date: item.start_date.toString(),
           },
         });
       }}
