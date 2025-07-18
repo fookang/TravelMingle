@@ -29,15 +29,3 @@ class UpdateUserView(generics.UpdateAPIView):
     
     def get_object(self):
         return self.request.user
-    
-    
-    # def patch(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance, data=request.data, partial=True)
-
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response({'message': 'Profile updated successfully'})
-    #     else:
-    #         print("PATCH error:", serializer.errors)  # 🔍 Log the error to console
-    #         return Response(serializer.errors, status=400)

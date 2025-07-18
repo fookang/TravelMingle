@@ -18,6 +18,13 @@ class ItineraryListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     
+class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ItinerarySerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Itinerary.objects.filter(user=self.request.user)
+    
     
 class ItineraryDayListCreate(generics.ListCreateAPIView):
     serializer_class = ItineraryDaySerializer
@@ -36,6 +43,17 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
             user=self.request.user)
         serializer.save(itinerary=itinerary)
 
+class ItineraryDayDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ItineraryDaySerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        itinerary = get_object_or_404(
+            Itinerary, 
+            id=self.kwargs.get("itinerary_id"), user=self.request.user)
+        return ItineraryDay.objects.filter(itinerary=itinerary)
+
+
     
 class ActivityListCreate(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
@@ -52,3 +70,13 @@ class ActivityListCreate(generics.ListCreateAPIView):
             ItineraryDay, 
             id=self.kwargs["day_id"], itinerary__user=self.request.user)
         serializer.save(itineraryday=day)
+
+class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ActivitySerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        day = get_object_or_404(
+            ItineraryDay, 
+            id=self.kwargs["day_id"], itinerary__user=self.request.user)
+        return Activity.objects.filter(itineraryday=day)
