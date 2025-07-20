@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import api from "../../../services/api";
 import { formatDate } from "../../../constants/fomatDate";
-import { useRouter } from "expo-router";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ItineraryDetails = () => {
   const router = useRouter();
@@ -61,7 +61,17 @@ const ItineraryDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={title} />
+      <View style={styles.header}>
+        <Header title={title} />
+        <TouchableOpacity
+          onPress={() => {
+            router.push(`/itineraries/${id}/days/createDay`);
+          }}
+          style={styles.button}
+        >
+          <Icon name="add" size={15} color="black" />
+        </TouchableOpacity>
+      </View>
 
       {itinerary.length === 0 ? (
         <Text style={{ textAlign: "center", marginTop: 20 }}>
@@ -81,6 +91,17 @@ export default ItineraryDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginRight: 30,
+  },
+  button: {
+    backgroundColor: "#DDDDDD",
+    paddingHorizontal: 15,
+    paddingVertical: 7,
+    borderRadius: 10,
   },
   content: {
     paddingHorizontal: 20,
