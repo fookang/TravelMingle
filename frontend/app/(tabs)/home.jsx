@@ -1,16 +1,16 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import ProtectedRoute from "../components/ProtectedRoute";
-import { useEffect, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import api from "../../services/api";
-import { useFocusEffect } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { formatDate } from "../../constants/fomatDate";
 import { Ionicons } from "@expo/vector-icons";
 
 const Home = () => {
   const router = useRouter();
+  const [currentItineraries, setCurrentItineraries] = useState([]);
   const [upcomingItineraries, setUpcomingItineraries] = useState([]);
   const [pastItineraries, setPastItineraries] = useState([]);
   const [displayPast, setDisplayPast] = useState(false);
@@ -21,15 +21,31 @@ const Home = () => {
       const response = await api.get("itinerary/");
 
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      const upcoming = response.data
-        .filter((item) => new Date(item.end_date) >= today.setHours(0, 0, 0, 0))
-        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      const current = [];
+      const upcoming = [];
+      const past = [];
 
-      const past = response.data
-        .filter((item) => new Date(item.end_date) < today.setHours(0, 0, 0, 0))
-        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      response.data.forEach((item) => {
+        const start = new Date(item.start_date);
+        const end = new Date(item.end_date);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        if (start <= today && end >= today) {
+          current.push(item);
+        } else if (start > today) {
+          upcoming.push(item);
+        } else if (end < today) {
+          past.push(item);
+        }
+      });
 
+      current.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      upcoming.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      past.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+      setCurrentItineraries(current);
       setUpcomingItineraries(upcoming);
       setPastItineraries(past);
     } catch (error) {
@@ -43,7 +59,7 @@ const Home = () => {
       style={styles.content}
       onPress={() => {
         router.push({
-          pathname: `itineraries/${item.id}`,
+          pathname: `itineraries/itinerary`,
           params: {
             id: item.id.toString(),
             title: item.title,
@@ -84,7 +100,17 @@ const Home = () => {
             <Icon name="add" size={15} color="black" />
           </TouchableOpacity>
         </View>
+
         <View style={styles.itineraryList}>
+          {currentItineraries.length > 0 && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionContent}>Current</Text>
+              </View>
+              {currentItineraries.map((item) => renderItem(item))}
+            </>
+          )}
+
           {upcomingItineraries.length > 0 && (
             <>
               <TouchableOpacity
@@ -150,7 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     borderRadius: 8,
   },
   itineraryList: {
