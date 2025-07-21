@@ -48,6 +48,7 @@ const Home = () => {
             id: item.id.toString(),
             title: item.title,
             start_date: item.start_date.toString(),
+            end_date: item.end_date.toString(),
           },
         });
       }}

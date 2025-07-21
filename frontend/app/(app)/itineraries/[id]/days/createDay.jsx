@@ -16,10 +16,9 @@ import { formatDate } from "../../../../../constants/fomatDate";
 
 const createDay = () => {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
+  const { id, start_date, end_date } = useLocalSearchParams();
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(start_date));
   const [dateButton, setDateButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTitleError, setShowTitleError] = useState(false);
@@ -29,7 +28,6 @@ const createDay = () => {
       setLoading(true);
       const response = await api.post(`itinerary/${id}/days/`, {
         title,
-        description,
         date: date.toISOString().split("T")[0],
       });
       if (response) {
@@ -75,16 +73,6 @@ const createDay = () => {
           />
         </View>
 
-        <View style={styles.input}>
-          <Text>Description: </Text>
-          <TextInput
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-            style={styles.inputText}
-          />
-        </View>
-
         <View>
           <TouchableOpacity onPress={() => setDateButton(true)}>
             <View style={styles.input}>
@@ -99,7 +87,8 @@ const createDay = () => {
               value={date}
               mode="date"
               display="default"
-              minimumDate={new Date()}
+              minimumDate={new Date(start_date)}
+              maximumDate={new Date(end_date)}
               onChange={(event, selectedDate) => {
                 if (selectedDate) {
                   setDate(selectedDate);

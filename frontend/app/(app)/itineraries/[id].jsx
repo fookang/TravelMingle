@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ItineraryDetails = () => {
   const router = useRouter();
-  const { id, title, start_date } = useLocalSearchParams();
+  const { id, title, start_date, end_date } = useLocalSearchParams();
   const [itinerary, setItinerary] = useState([]);
 
   const fetchItinerary = async () => {
@@ -65,7 +65,14 @@ const ItineraryDetails = () => {
         <Header title={title} />
         <TouchableOpacity
           onPress={() => {
-            router.push(`/itineraries/${id}/days/createDay`);
+            router.push({
+              pathname: `/itineraries/${id}/days/createDay`,
+              params: {
+                id: id,
+                start_date: start_date,
+                end_date: end_date,
+              },
+            });
           }}
           style={styles.button}
         >
