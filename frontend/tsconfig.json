@@ -3,13 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-, "app/(tabs)/_layout.jsx"  ]
+  "include": ["**/*.ts", "**/*.tsx",],
+  "exclude": ["node_modules"]
 }

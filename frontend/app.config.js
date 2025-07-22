@@ -16,7 +16,20 @@ export default {
         //   faceIDPermission:
         //     "Allow $(PRODUCT_NAME) to access your Face ID biometric data.",
         // },
-        "expo-router",
+      ],
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "The app accesses your photos to let you share them with your friends.",
+        },
+      ],
+      [
+        "expo-local-authentication",
+        {
+          faceIDPermission: "Allow $(PRODUCT_NAME) to use Face ID.",
+        },
       ],
     ],
   },
