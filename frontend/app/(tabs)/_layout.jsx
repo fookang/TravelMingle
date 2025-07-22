@@ -1,5 +1,7 @@
 import { Tabs } from "expo-router";
 import { AuthProvider } from "../../context/AuthContext";
+import { ProtectedRoute } from "../components/ProtectedRoute";
+
 const TabsLayout = () => {
   return (
     <AuthProvider>

@@ -40,7 +40,7 @@ const ItineraryDetails = () => {
         router.push({
           pathname: `/itineraries/${id}/days/${item.id}`,
           params: {
-            title: item.title,
+            title: `Day ${getDayNumber(item.date)}: ${item.title}`,
           },
         });
       }}

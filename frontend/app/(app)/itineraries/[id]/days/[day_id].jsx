@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "../../../../components/Header";
+import { useLocalSearchParams } from "expo-router";
 
 const ItineraryDayDetails = () => {
+  const { title } = useLocalSearchParams();
   return (
-    <View>
+    <SafeAreaView>
+      <Header title={title} />
       <Text>ItineraryDayDetails</Text>
-    </View>
-  )
-}
+    </SafeAreaView>
+  );
+};
 
-export default ItineraryDayDetails
+export default ItineraryDayDetails;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

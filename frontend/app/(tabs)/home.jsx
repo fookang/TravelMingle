@@ -7,9 +7,11 @@ import api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { formatDate } from "../../constants/fomatDate";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [currentItineraries, setCurrentItineraries] = useState([]);
   const [upcomingItineraries, setUpcomingItineraries] = useState([]);
   const [pastItineraries, setPastItineraries] = useState([]);
@@ -82,68 +84,76 @@ const Home = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getItinerary();
+      if (isAuthenticated) getItinerary();
     }, [])
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <ProtectedRoute>
-        <View style={styles.header}>
-          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Welcome back</Text>
-          <TouchableOpacity
-            onPress={() => {
-              router.push("/(app)/itineraries/createItinerary");
-            }}
-            style={styles.button}
-          >
-            <Icon name="add" size={15} color="black" />
-          </TouchableOpacity>
-        </View>
+        <View style={{ paddingHorizontal: 20 }}>
+          <View style={styles.header}>
+            <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+              Welcome back
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                router.push("/(app)/itineraries/createItinerary");
+              }}
+              style={styles.button}
+            >
+              <Icon name="add" size={15} color="black" />
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.itineraryList}>
-          {currentItineraries.length > 0 && (
-            <>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionContent}>Current</Text>
-              </View>
-              {currentItineraries.map((item) => renderItem(item))}
-            </>
-          )}
+          <View style={styles.itineraryList}>
+            {currentItineraries.length > 0 && (
+              <>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionContent}>Current</Text>
+                </View>
+                {currentItineraries.map((item) => renderItem(item))}
+              </>
+            )}
 
-          {upcomingItineraries.length > 0 && (
-            <>
-              <TouchableOpacity
-                style={styles.sectionHeader}
-                onPress={() => toggleDisplayUpcoming()}
-              >
-                <Text style={styles.sectionContent}>Upcoming</Text>
-                <Ionicons
-                  name={
-                    displayUpcoming ? "caret-up-outline" : "caret-down-outline"
-                  }
-                  style={styles.sectionContent}
-                />
-              </TouchableOpacity>
-              {displayUpcoming &&
-                upcomingItineraries.map((item) => renderItem(item))}
-            </>
-          )}
-          {pastItineraries.length > 0 && (
-            <>
-              <TouchableOpacity
-                style={styles.sectionHeader}
-                onPress={() => toggleDisplayPast()}
-              >
-                <Text style={styles.sectionContent}>Past</Text>
-                <Ionicons
-                  name={displayPast ? "caret-up-outline" : "caret-down-outline"}
-                  style={styles.sectionContent}
-                />
-              </TouchableOpacity>
-              {displayPast && pastItineraries.map((item) => renderItem(item))}
-            </>
-          )}
+            {upcomingItineraries.length > 0 && (
+              <>
+                <TouchableOpacity
+                  style={styles.sectionHeader}
+                  onPress={() => toggleDisplayUpcoming()}
+                >
+                  <Text style={styles.sectionContent}>Upcoming</Text>
+                  <Ionicons
+                    name={
+                      displayUpcoming
+                        ? "caret-up-outline"
+                        : "caret-down-outline"
+                    }
+                    style={styles.sectionContent}
+                  />
+                </TouchableOpacity>
+                {displayUpcoming &&
+                  upcomingItineraries.map((item) => renderItem(item))}
+              </>
+            )}
+            {pastItineraries.length > 0 && (
+              <>
+                <TouchableOpacity
+                  style={styles.sectionHeader}
+                  onPress={() => toggleDisplayPast()}
+                >
+                  <Text style={styles.sectionContent}>Past</Text>
+                  <Ionicons
+                    name={
+                      displayPast ? "caret-up-outline" : "caret-down-outline"
+                    }
+                    style={styles.sectionContent}
+                  />
+                </TouchableOpacity>
+                {displayPast && pastItineraries.map((item) => renderItem(item))}
+              </>
+            )}
+          </View>
         </View>
       </ProtectedRoute>
     </SafeAreaView>
@@ -155,7 +165,6 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
   },
   header: {
     flexDirection: "row",
