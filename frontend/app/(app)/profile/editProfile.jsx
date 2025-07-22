@@ -32,7 +32,8 @@ const editProfile = () => {
 
   useEffect(() => {
     if (avatar) {
-      console.log("✅ Avatar state updated:", avatar);
+      console.log("Avatar state updated:", avatar);
+      console.log(typeof avatar);
     }
   }, [avatar]);
 
@@ -46,8 +47,6 @@ const editProfile = () => {
     const { canceled } = result;
     if (!canceled) {
       setAvatar(result.assets[0]);
-      console.log("ImagePicker result:", result);
-      console.log(result.assets[0].uri);
     }
   };
 
@@ -57,13 +56,18 @@ const editProfile = () => {
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
 
-      if (avatar && avatar.startsWith("file")) {
+      if (
+        avatar &&
+        typeof avatar === "object" &&
+        avatar.uri &&
+        avatar.uri.startsWith("file")
+      ) {
         formData.append("avatar", {
           uri: avatar.uri,
           name: avatar.fileName,
           type: avatar.mimeType,
         });
-        console.log("Picture uploaded");
+        console.log("Picture uploaded (object)");
       }
 
       const response = await api.patch("user/update/", formData, {

@@ -56,7 +56,7 @@ const createDay = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Create new Itinerary" />
+      <Header title="Create new Itinerary Day" />
       <View style={styles.content}>
         <View style={styles.input}>
           <Text>
@@ -128,6 +128,7 @@ export default createDay;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   content: {
     marginHorizontal: 20,

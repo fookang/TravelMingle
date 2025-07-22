@@ -98,11 +98,13 @@ export default ItineraryDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginRight: 30,
+    alignItems: "center",
   },
   button: {
     backgroundColor: "#DDDDDD",
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   itineraryDay: {
     marginBottom: 15,
