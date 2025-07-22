@@ -13,6 +13,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import { useAuth } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const router = useRouter();
@@ -37,7 +38,13 @@ const Login = () => {
         { timeout: 5000 }
       );
       await SecureStore.setItemAsync(ACCESS_TOKEN, response.data.access);
+      // console.log("Access token saved:", response.data.access);
       await SecureStore.setItemAsync(REFRESH_TOKEN, response.data.refresh);
+      // console.log("Refresh token:", response.data.refresh);
+
+      await AsyncStorage.setItem("username", username);
+      // console.log("Username:", username);
+
       login();
       router.push("/(tabs)/profile");
     } catch (err) {

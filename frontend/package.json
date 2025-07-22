@@ -45,7 +45,8 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "react-password-checklist": "^1.8.1"
+    "react-password-checklist": "^1.8.1",
+    "expo-local-authentication": "~16.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -85,7 +85,7 @@ const Home = () => {
   useFocusEffect(
     useCallback(() => {
       if (isAuthenticated) getItinerary();
-    }, [])
+    }, [isAuthenticated])
   );
 
   return (

@@ -82,7 +82,7 @@ const editProfile = () => {
       console.log(err);
       Alert.alert(
         "Error",
-        "Failed to reset password. Please check your connection or try again."
+        "Failed to update account. Please check your connection or try again."
       );
     }
   };

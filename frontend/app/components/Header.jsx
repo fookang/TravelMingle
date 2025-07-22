@@ -3,7 +3,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-const Header = ({title}) => {
+const Header = ({ title }) => {
   const router = useRouter();
   return (
     <View style={styles.header}>
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
   title: {
     fontSize: 24,
