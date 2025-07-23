@@ -5,15 +5,21 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import api from "../../services/api";
 import * as SecureStore from "expo-secure-store";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants/tokens";
+import {
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+  USERNAME,
+  PASSWORD,
+} from "../../constants/tokens";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import { useAuth } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const Login = () => {
   const router = useRouter();
@@ -22,9 +28,18 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
 
-  const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) {
+  const handleLogin = async ({
+    biometric = false,
+    inputUsername,
+    inputPassword,
+  }) => {
+    if (loading) return;
+
+    const user = biometric ? inputUsername : username;
+    const pass = biometric ? inputPassword : password;
+    if ((!user?.trim() || !pass?.trim()) && !biometric) {
       setError("Please fill in both username and password.");
       return;
     }
@@ -34,16 +49,12 @@ const Login = () => {
     try {
       const response = await api.post(
         "user/token/",
-        { username, password },
+        { username: user, password: pass },
         { timeout: 5000 }
       );
       await SecureStore.setItemAsync(ACCESS_TOKEN, response.data.access);
-      // console.log("Access token saved:", response.data.access);
       await SecureStore.setItemAsync(REFRESH_TOKEN, response.data.refresh);
-      // console.log("Refresh token:", response.data.refresh);
-
-      await AsyncStorage.setItem("username", username);
-      // console.log("Username:", username);
+      await AsyncStorage.setItem("username", user);
 
       login();
       router.push("/(tabs)/profile");
@@ -55,8 +66,53 @@ const Login = () => {
       }
     } finally {
       setLoading(false);
+      setPassword("");
     }
   };
+
+  const useBiometric = async () => {
+    if (loading) return;
+
+    try {
+      const value = await AsyncStorage.getItem("biometric");
+      if (value === "true") {
+        const biometricAuth = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Log in with Biometric",
+          cancelLabel: "Cancel",
+          disableDeviceFallback: true,
+        });
+        if (biometricAuth.success === true) {
+          const username = await SecureStore.getItemAsync(USERNAME);
+          const password = await SecureStore.getItemAsync(PASSWORD);
+          handleLogin({
+            biometric: true,
+            inputUsername: username,
+            inputPassword: password,
+          });
+        }
+      } else {
+        Alert.alert("Error", "You did not enable biometric login");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "You did not enable biometric login");
+    }
+  };
+
+  useEffect(() => {
+    const checkBiometric = async () => {
+      try {
+        const value = await AsyncStorage.getItem("biometric");
+        if (value === "true") {
+          setBiometricAvailable(true);
+          useBiometric();
+        } else {
+          setBiometricAvailable(false);
+        }
+      } catch (error) {}
+    };
+    checkBiometric();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,7 +139,7 @@ const Login = () => {
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         <TouchableOpacity
-          onPress={handleLogin}
+          onPress={() => handleLogin({ biometric: false })}
           disabled={loading}
           style={[styles.button, loading && styles.buttonDisabled]}
         >
@@ -100,6 +156,17 @@ const Login = () => {
             Don't have an account? Register
           </Text>
         </TouchableOpacity>
+
+        {biometricAvailable && (
+          <TouchableOpacity
+            onPress={() => {
+              useBiometric();
+            }}
+            style={styles.linkButton}
+          >
+            <Text style={{ fontWeight: "bold" }}>Use Biometric</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -110,6 +177,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   content: {
     flex: 1,

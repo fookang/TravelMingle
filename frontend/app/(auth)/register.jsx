@@ -18,13 +18,13 @@ const Register = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [valid, setValid] = useState(false)
+  const [valid, setValid] = useState(false);
 
   const handleRegister = async () => {
     if (
@@ -125,7 +125,9 @@ const Register = () => {
           autoCorrect={false}
           style={styles.input}
         />
-        <View style={{alignItems: "flex-start", width: '80%', marginBottom: 10}}>
+        <View
+          style={{ alignItems: "flex-start", width: "80%", marginBottom: 10 }}
+        >
           <PasswordCheckList
             password={password}
             confirmPassword={confirmPassword}
@@ -152,6 +154,7 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   content: {
     flex: 1,
