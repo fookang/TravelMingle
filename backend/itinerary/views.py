@@ -21,6 +21,8 @@ class ItineraryListCreate(generics.ListCreateAPIView):
 class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItinerarySerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'itinerary_id'
     
     def get_queryset(self):
         return Itinerary.objects.filter(user=self.request.user)
@@ -46,6 +48,8 @@ class ItineraryDayListCreate(generics.ListCreateAPIView):
 class ItineraryDayDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItineraryDaySerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'day_id'
     
     def get_queryset(self):
         itinerary = get_object_or_404(
@@ -74,6 +78,8 @@ class ActivityListCreate(generics.ListCreateAPIView):
 class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ActivitySerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'activity_id'
     
     def get_queryset(self):
         day = get_object_or_404(
