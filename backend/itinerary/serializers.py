@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Itinerary, ItineraryDay, Activity
+from .models import Itinerary, ItineraryDay, Activity, Document, Collaborator
 User = get_user_model()
 
 class ItinerarySerializer(serializers.ModelSerializer):
@@ -23,6 +23,21 @@ class ItinerarySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
         
         
+class CollaboratorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collaborator
+        fields = [
+            'itinerary', 'user'
+        ]
+        read_only_fields = ['itinerary', 'user']    
+  
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ['id', 'itinerary', 'user', 'doc_type', 'file', 'uploaded_at']
+        read_only_fields = ['id','itinerary', 'user', 'uploaded_at'] 
+      
+      
 class ItineraryDaySerializer(serializers.ModelSerializer):
     itinerary_title = serializers.CharField(source="itinerary.title",read_only=True)
     
