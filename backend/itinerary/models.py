@@ -1,6 +1,11 @@
 from django.db import models
 from django.conf import settings
 
+def document_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f"{instance.user.username}_{instance.itinerary.id}_{instance.doc_type}.{ext}"
+    return f"documents/{filename}"
+
 
 class Itinerary(models.Model):
     user = models.ForeignKey(
@@ -13,9 +18,39 @@ class Itinerary(models.Model):
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    collaborators = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,related_name='collaborating_itineraries'
+    )
     
     def __str__(self):
         return self.title
+    
+    
+
+class Collaborator(models.Model):
+    itinerary = models.ForeignKey(
+        Itinerary,
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+    )
+    
+    
+    
+class Document(models.Model):
+    DOCUMNET_TYPES = [
+        ('passport', 'Passport'),
+        ('visa', 'Visa'),
+        ('flight', 'Flight'),
+        ('insurance', 'Insurance'),
+    ]
+    itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    doc_type = models.CharField(max_length=20, choices=DOCUMNET_TYPES)
+    file = models.FileField(upload_to=document_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     
     
 class ItineraryDay(models.Model):
@@ -28,6 +63,9 @@ class ItineraryDay(models.Model):
     
     def __str__(self):
         return f"{self.itinerary.title} - {self.date}"
+    
+    
+    
     
 class Activity(models.Model):
     itineraryday = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
