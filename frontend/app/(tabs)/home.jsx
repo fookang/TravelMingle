@@ -40,9 +40,11 @@ const Home = () => {
         }
       });
 
-      current.sort((a, b) => a.start_date - b.start_date);
-      upcoming.sort((a, b) => a.start_date - b.start_date);
-      past.sort((a, b) => a.start_date - b.start_date);
+      current.sort((a, b) => a.start_date.localeCompare(b.start_date));
+
+      upcoming.sort((a, b) => a.start_date.localeCompare(b.start_date));
+
+      past.sort((a, b) => a.start_date.localeCompare(b.start_date));
 
       setCurrentItineraries(current);
       setUpcomingItineraries(upcoming);

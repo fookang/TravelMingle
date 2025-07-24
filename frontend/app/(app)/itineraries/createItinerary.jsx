@@ -30,7 +30,7 @@ const createItinerary = () => {
   const handleCreate = async () => {
     try {
       setLoading(true);
-      
+
       const response = await api.post("itinerary/", {
         title,
         description,
@@ -52,12 +52,10 @@ const createItinerary = () => {
   };
 
   const displayDate = (date) => {
-    const today = new Date();
+    const today = formatAsYYYYMMDD(new Date());
+    date = formatAsYYYYMMDD(date);
 
-    const isToday =
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate();
+    const isToday = today === date;
 
     return isToday ? "" : formatDate(date.toString());
   };
