@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useFocusEffect } from "expo-router";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -90,7 +96,7 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ProtectedRoute>
-        <View style={{ paddingHorizontal: 20 }}>
+        <ScrollView style={{ paddingHorizontal: 20 }}>
           <View style={styles.header}>
             <Text style={{ fontSize: 25, fontWeight: "bold" }}>
               Welcome back
@@ -153,7 +159,7 @@ const Home = () => {
               </>
             )}
           </View>
-        </View>
+        </ScrollView>
       </ProtectedRoute>
     </SafeAreaView>
   );
