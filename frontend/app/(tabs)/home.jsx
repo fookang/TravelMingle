@@ -5,7 +5,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import { useCallback, useState } from "react";
 import api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { formatDate } from "../../constants/fomatDate";
+import { formatDate, formatAsYYYYMMDD } from "../../constants/fomatDate";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 
@@ -22,18 +22,15 @@ const Home = () => {
     try {
       const response = await api.get("itinerary/");
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = formatAsYYYYMMDD(new Date());
 
       const current = [];
       const upcoming = [];
       const past = [];
 
       response.data.forEach((item) => {
-        const start = new Date(item.start_date);
-        const end = new Date(item.end_date);
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
+        const start = item.start_date;
+        const end = item.end_date;
         if (start <= today && end >= today) {
           current.push(item);
         } else if (start > today) {
@@ -43,9 +40,9 @@ const Home = () => {
         }
       });
 
-      current.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-      upcoming.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-      past.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      current.sort((a, b) => a.start_date - b.start_date);
+      upcoming.sort((a, b) => a.start_date - b.start_date);
+      past.sort((a, b) => a.start_date - b.start_date);
 
       setCurrentItineraries(current);
       setUpcomingItineraries(upcoming);

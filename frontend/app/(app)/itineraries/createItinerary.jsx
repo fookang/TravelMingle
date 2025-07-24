@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate } from "../../../constants/fomatDate";
+import { formatDate, formatAsYYYYMMDD } from "../../../constants/fomatDate";
 
 const createItinerary = () => {
   const router = useRouter();
@@ -30,14 +30,15 @@ const createItinerary = () => {
   const handleCreate = async () => {
     try {
       setLoading(true);
-
+      
       const response = await api.post("itinerary/", {
         title,
         description,
-        start_date: start_date.toISOString().split("T")[0],
-        end_date: end_date.toISOString().split("T")[0],
+        start_date: formatAsYYYYMMDD(start_date),
+        end_date: formatAsYYYYMMDD(end_date),
       });
       if (response) {
+        console.log(response.data);
         router.push("/home");
       } else {
         Alert.alert("Error", "An error occured. Please try again");
