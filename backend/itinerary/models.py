@@ -68,7 +68,7 @@ class ItineraryDay(models.Model):
     
     
 class Activity(models.Model):
-    itineraryday = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
+    itineraryDay = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
     time = models.TimeField()
     title = models.CharField(max_length=100)
     
