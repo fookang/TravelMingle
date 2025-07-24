@@ -6,27 +6,28 @@ import { useCallback, useState } from "react";
 import api from "../../../services/api";
 import { formatDate } from "../../../constants/fomatDate";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useItinerary } from "../../../context/ItineraryContext";
 
 const ItineraryDetails = () => {
   const router = useRouter();
-  const { id, title, start_date, end_date } = useLocalSearchParams();
-  const [itinerary, setItinerary] = useState([]);
+  const { itinerary } = useItinerary();
+  const [itineraryDay, setItineraryDay] = useState([]);
 
   const fetchItinerary = async () => {
     try {
-      const response = await api.get(`itinerary/${id}/days/`);
+      const response = await api.get(`itinerary/${itinerary.id}/days/`);
       console.log(response);
       const sorted = response.data.sort(
         (a, b) => new Date(a.date) - new Date(b.date)
       );
-      setItinerary(sorted);
+      setItineraryDay(sorted);
     } catch (error) {
       console.log(error);
     }
   };
 
   const getDayNumber = (date) => {
-    const start = new Date(start_date);
+    const start = new Date(itinerary.start_date);
     const current = new Date(date);
     const diff = Math.floor((current - start) / (1000 * 24 * 60 * 60) + 1);
     return diff;
@@ -38,7 +39,7 @@ const ItineraryDetails = () => {
       style={styles.itineraryDay}
       onPress={() => {
         router.push({
-          pathname: `/itineraries/${id}/days/${item.id}`,
+          pathname: `/itineraries/${itinerary.id}/days/${item.id}`,
           params: {
             title: `Day ${getDayNumber(item.date)}: ${item.title}`,
           },
@@ -62,7 +63,7 @@ const ItineraryDetails = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Header title={title} />
+        <Header title={itinerary.title} />
         <TouchableOpacity
           onPress={() => {
             router.push({
@@ -80,13 +81,13 @@ const ItineraryDetails = () => {
         </TouchableOpacity>
       </View>
 
-      {itinerary.length === 0 ? (
+      {itineraryDay.length === 0 ? (
         <Text style={{ textAlign: "center", marginTop: 20 }}>
           No days added yet.
         </Text>
       ) : (
         <View style={styles.content}>
-          {itinerary.map((item) => renderItem(item))}
+          {itineraryDay.map((item) => renderItem(item))}
         </View>
       )}
     </SafeAreaView>
