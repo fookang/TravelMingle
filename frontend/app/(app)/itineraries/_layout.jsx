@@ -5,7 +5,9 @@ import { ItineraryProvider } from "../../../context/ItineraryContext";
 export default function AppLayout() {
   return (
     <ItineraryProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <ProtectedRoute>
+        <Stack screenOptions={{ headerShown: false }} />
+      </ProtectedRoute>
     </ItineraryProvider>
   );
 }

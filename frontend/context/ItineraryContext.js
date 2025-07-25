@@ -15,6 +15,7 @@ export const ItineraryProvider = ({ children }) => {
       setItinerary({
         id: response.data["id"],
         title: response.data["title"],
+        description: response.data["description"],
         start_date: response.data["start_date"],
         end_date: response.data["end_date"],
       });
@@ -30,6 +31,7 @@ export const ItineraryProvider = ({ children }) => {
       setItinerary({
         id: response.data["id"],
         title: response.data["title"],
+        description: response.data["description"],
         start_date: response.data["start_date"],
         end_date: response.data["end_date"],
       });
