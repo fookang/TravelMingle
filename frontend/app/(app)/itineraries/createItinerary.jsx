@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate, formatAsYYYYMMDD } from "../../../constants/fomatDate";
+import { formatAsYYYYMMDD, displayDate } from "../../../constants/fomatDate";
 
 const createItinerary = () => {
   const router = useRouter();
@@ -49,15 +49,6 @@ const createItinerary = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const displayDate = (date) => {
-    const today = formatAsYYYYMMDD(new Date());
-    date = formatAsYYYYMMDD(date);
-
-    const isToday = today === date;
-
-    return isToday ? "" : formatDate(date.toString());
   };
 
   const checkValid = () => {
@@ -105,9 +96,7 @@ const createItinerary = () => {
           <TouchableOpacity onPress={() => setStartDateButton(true)}>
             <View style={styles.input}>
               <Text style={styles.label}>Start Date:</Text>
-              <Text style={styles.dateValue}>
-                {displayDate(start_date) || "Today"}
-              </Text>
+              <Text style={styles.dateValue}>{displayDate(start_date)}</Text>
             </View>
           </TouchableOpacity>
           {startDateButton && (
@@ -130,9 +119,7 @@ const createItinerary = () => {
           <TouchableOpacity onPress={() => setEndDateButton(true)}>
             <View style={styles.input}>
               <Text style={styles.label}>End Date:</Text>
-              <Text style={styles.dateValue}>
-                {displayDate(end_date) || "Today"}
-              </Text>
+              <Text style={styles.dateValue}>{displayDate(end_date)}</Text>
             </View>
           </TouchableOpacity>
 
