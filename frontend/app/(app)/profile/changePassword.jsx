@@ -11,30 +11,42 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import PasswordCheckList from "../../components/PasswordCheckList";
 import api from "../../../services/api";
+import { useRouter } from "expo-router";
 
 const changePassword = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [ConfirmNewPassword, setConfirmNewPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [valid, setValid] = useState(false);
+  const [errorSamePassword, setErrorSamePassword] = useState("");
+  const router = useRouter();
 
   const handleChangePassword = async () => {
     try {
-      const response = await api.patch("user/update/", {
+      setErrorMessage("");
+      setErrorSamePassword("");
+
+      const response = await api.post("user/change-password/", {
         old_password: password,
-        password: newPassword,
+        new_password: newPassword,
       });
       if (response.status === 200) {
         Alert.alert("Success", "Your password has been reset successfully");
+        router.back();
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.log(err);
-      Alert.alert(
-        "Error",
-        "Failed to reset password. Please check your connection or try again."
-      );
+      console.log(err.response?.data);
+      if (err.response?.data["old_password"]) {
+        const msg = err.response.data["old_password"];
+        setErrorMessage(`${err.response.data["old_password"]}`);
+      } else if (err.response?.data["non_field_errors"]) {
+        setErrorSamePassword(`${err.response.data["non_field_errors"]}`);
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -52,6 +64,9 @@ const changePassword = () => {
             style={styles.input}
           />
         </View>
+        {errorMessage && (
+          <Text style={styles.errorMessage}>{errorMessage}</Text>
+        )}
         <View style={styles.section}>
           <Text>New Password: </Text>
           <TextInput
@@ -72,11 +87,16 @@ const changePassword = () => {
             style={styles.input}
           />
         </View>
-        <PasswordCheckList
-          password={newPassword}
-          confirmPassword={ConfirmNewPassword}
-          checkValidation={setValid}
-        />
+        <View style={{ marginBottom: 5 }}>
+          <PasswordCheckList
+            password={newPassword}
+            confirmPassword={ConfirmNewPassword}
+            checkValidation={setValid}
+          />
+        </View>
+        {errorSamePassword && (
+          <Text style={styles.errorMessage}>{errorSamePassword}</Text>
+        )}
         <TouchableOpacity
           style={styles.button}
           disabled={!valid}
@@ -120,5 +140,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#333",
     height: 50,
     borderRadius: 5,
+  },
+  errorMessage: {
+    color: "red",
+    marginBottom: 10,
+    marginTop: -5,
   },
 });
