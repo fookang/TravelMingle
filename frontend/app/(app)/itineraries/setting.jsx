@@ -50,7 +50,7 @@ const setting = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Itinerary settings" />
+      <Header title="Settings" />
       <View style={styles.content}>
         <View style={styles.itineraryHeader}>
           <View>

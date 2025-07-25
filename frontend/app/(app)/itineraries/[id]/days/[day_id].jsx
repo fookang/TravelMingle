@@ -11,13 +11,18 @@ const ItineraryDayDetails = () => {
   const { title, day_id, id } = useLocalSearchParams();
   const [activity, setActivity] = useState([]);
 
+  const displayTime = (timeStr) => {
+    const [hh, mm, ss] = timeStr.split(":");
+    return `${hh}:${mm}`;
+  };
+
   const fetchItineraryDay = async () => {
     try {
       const response = await api.get(
         `itinerary/${id}/days/${day_id}/activities/`
       );
       console.log(response.data);
-      const sorted = response.data.sort((a, b) => a.time - b.time);
+      const sorted = response.data.sort((a, b) => a.time.localeCompare(b.time));
       setActivity(sorted);
     } catch (error) {
       console.log(error);
@@ -33,11 +38,11 @@ const ItineraryDayDetails = () => {
   const renderItem = (item) => (
     <TouchableOpacity
       key={item.id}
-      style={styles}
+      style={styles.item}
       onPress={() => console.log("Activity", item.id)}
     >
-      <Text style={styles}>{item.time}</Text>
-      <Text style={styles}>{item.title}</Text>
+      <Text style={styles.time}>{displayTime(item.time)}</Text>
+      <Text style={styles.title}>{item.title}</Text>
     </TouchableOpacity>
   );
 
@@ -88,8 +93,11 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 10,
   },
-  content: { padding: 16 },
+  content: {
+    padding: 16,
+  },
   item: {
+    flexDirection: "row",
     padding: 16,
     borderBottomWidth: 1,
     borderColor: "#eee",
@@ -97,6 +105,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#fafafa",
   },
-  time: { fontWeight: "bold" },
-  title: { color: "#333" },
+  time: {
+    fontWeight: "bold",
+    paddingRight: 20,
+    fontSize: 15,
+    width: 70,
+  },
+  title: {
+    color: "#333",
+    fontSize: 15,
+  },
 });

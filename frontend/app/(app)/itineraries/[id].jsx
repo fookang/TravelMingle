@@ -36,7 +36,7 @@ const ItineraryDetails = () => {
   const renderItem = (item) => (
     <TouchableOpacity
       key={item.id}
-      style={styles.itineraryDay}
+      style={styles.item}
       onPress={() => {
         router.push({
           pathname: `/itineraries/${itinerary.id}/days/${item.id}`,
@@ -46,10 +46,11 @@ const ItineraryDetails = () => {
         });
       }}
     >
-      <Text style={styles.item}>
-        Day {getDayNumber(item.date)}: {item.title}
-      </Text>
-      <Text style={styles.item}>{formatDate(item.date)}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={styles.day}>Day {getDayNumber(item.date)}</Text>
+        <Text style={styles.title}>{item.title}</Text>
+      </View>
+      <Text style={styles.date}>{formatDate(item.date)}</Text>
     </TouchableOpacity>
   );
 
@@ -115,17 +116,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 20,
   },
-  itineraryDay: {
-    marginBottom: 15,
+  item: {
+    marginBottom: 8,
     flexDirection: "row",
     justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderColor: "#eee",
     alignItems: "center",
-    padding: 10,
-    backgroundColor: "#F8F8F8",
+    padding: 16,
+    backgroundColor: "#fafafa",
     borderRadius: 8,
   },
-  item: {
-    fontSize: 16,
-    paddingVertical: 4,
+  title: {
+    color: "#333",
+    fontSize: 15,
+  },
+  day: {
+    fontWeight: "bold",
+    paddingRight: 20,
+    fontSize: 15,
+    width: "70",
   },
 });
