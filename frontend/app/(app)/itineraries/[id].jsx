@@ -55,7 +55,6 @@ const ItineraryDetails = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("Focused: calling fetchItinerary");
       fetchItinerary();
     }, [])
   );

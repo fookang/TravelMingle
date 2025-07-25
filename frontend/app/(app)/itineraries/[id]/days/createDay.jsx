@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import api from "../../../../../services/api";
-import { useRouter, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
