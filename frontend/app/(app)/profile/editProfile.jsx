@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -76,6 +77,7 @@ const editProfile = () => {
         },
       });
       if (response.status === 200) {
+        console.log(response.data);
         Alert.alert("Success", "Your profile has been updated successfully", [
           { text: "Ok", onPress: () => router.back() },
         ]);
@@ -92,43 +94,96 @@ const editProfile = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Header title="Edit Profile" />
-      <TouchableOpacity onPress={pickImage}>
-        <Text>Select New Avatar</Text>
-      </TouchableOpacity>
-      <View style={styles.section}>
-        <Text>First Name: </Text>
-        <TextInput
-          value={firstName}
-          placeholder=""
-          onChangeText={setFirstName}
-          style={styles.input}
-        />
+      <View style={styles.content}>
+        <TouchableOpacity onPress={pickImage} style={{ alignItems: "center" }}>
+          <Image
+            source={{ uri: typeof avatar === "string" ? avatar : avatar?.uri }}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>First Name: </Text>
+          <TextInput
+            value={firstName}
+            placeholder=""
+            onChangeText={setFirstName}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.label}>Last Name: </Text>
+          <TextInput
+            value={lastName}
+            placeholder=""
+            onChangeText={setLastName}
+            style={styles.input}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          // disabled={!valid}
+          onPress={() => {
+            console.log("submit");
+            handleUpdate();
+          }}
+        >
+          <Text style={styles.buttonText}>Update</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.section}>
-        <Text>Last Name: </Text>
-        <TextInput
-          value={lastName}
-          placeholder=""
-          onChangeText={setLastName}
-          style={styles.input}
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        // disabled={!valid}
-        onPress={() => {
-          console.log("submit");
-          handleUpdate();
-        }}
-      >
-        <Text>Update</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 export default editProfile;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 10,
+  },
+  content: {
+    marginHorizontal: 20,
+    paddingTop: 20,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginTop: 16,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: "#a8a8a8",
+    backgroundColor: "#eee",
+  },
+  section: {
+    marginBottom: 18,
+  },
+  label: {
+    fontSize: 15,
+    marginBottom: 5,
+    color: "#444",
+    fontWeight: "500",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#333",
+    height: 50,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+  },
+});

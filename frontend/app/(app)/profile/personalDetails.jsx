@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import api from "../../../services/api";
 import Header from "../../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,7 +27,7 @@ const personalDetails = () => {
       } = response.data;
       setUsername(username);
       setEmail(email);
-      setAvatar(avatar);
+      setAvatar(`${avatar}?t=${Date.now()}`);
       setFirstName(firstName);
       setLastName(lastName);
     } catch (err) {}
@@ -44,22 +44,22 @@ const personalDetails = () => {
       <Header title="Personal Details" />
       <View style={styles.content}>
         <View style={styles.profile}>
-          <Image source={{ uri: avatar }} style={{ width: 100, height: 100 }} />
+          <Image source={{ uri: avatar }} style={styles.avatar} />
           <View style={styles.name}>
-            <Text>{firstName}</Text>
-            <Text>&nbsp;</Text>
-            <Text>{lastName}</Text>
+            <Text style={styles.label}>
+              {firstName} {lastName}
+            </Text>
           </View>
         </View>
 
         <View style={styles.detailsContainer}>
-          <Text style={{ color: "grey" }}>Username</Text>
-          <Text>{username}</Text>
+          <Text style={styles.label && { color: "grey" }}>Username</Text>
+          <Text style={styles.label}>{username}</Text>
         </View>
 
         <View style={styles.detailsContainer}>
-          <Text style={{ color: "grey" }}>Email</Text>
-          <Text>{email}</Text>
+          <Text style={styles.label && { color: "grey" }}>Email</Text>
+          <Text style={styles.label}>{email}</Text>
         </View>
 
         <TouchableOpacity
@@ -99,8 +99,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 20,
   },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginTop: 16,
+    marginBottom: 5,
+    borderWidth: 2,
+    borderColor: "#a8a8a8",
+    backgroundColor: "#eee",
+  },
   name: {
     flexDirection: "row",
+  },
+  label: {
+    fontSize: 17,
   },
   detailsContainer: {
     paddingBottom: 15,
