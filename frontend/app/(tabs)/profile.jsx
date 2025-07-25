@@ -1,9 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
-import { useContext, useState } from "react";
 import { useRouter } from "expo-router";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "../components/Header";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { useAuth } from "../../context/AuthContext";
 
@@ -14,6 +12,7 @@ const profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      
       <ProtectedRoute>
         <View style={styles.content}>
           <TouchableOpacity

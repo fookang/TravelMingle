@@ -12,13 +12,17 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate } from "../../../../../constants/fomatDate";
+import {
+  formatDate,
+  displayDate,
+  parseYYYYMMDD,
+} from "../../../../../constants/fomatDate";
 
 const createDay = () => {
   const router = useRouter();
   const { id, start_date, end_date } = useLocalSearchParams();
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState(new Date(start_date));
+  const [date, setDate] = useState(parseYYYYMMDD(start_date));
   const [dateButton, setDateButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTitleError, setShowTitleError] = useState(false);
@@ -41,17 +45,6 @@ const createDay = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const displayDate = (date) => {
-    const today = new Date();
-
-    const isToday =
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate();
-
-    return isToday ? "" : formatDate(date.toString());
   };
 
   return (
@@ -87,8 +80,8 @@ const createDay = () => {
               value={date}
               mode="date"
               display="default"
-              minimumDate={new Date(start_date)}
-              maximumDate={new Date(end_date)}
+              minimumDate={parseYYYYMMDD(start_date)}
+              maximumDate={parseYYYYMMDD(end_date)}
               onChange={(event, selectedDate) => {
                 if (selectedDate) {
                   setDate(selectedDate);

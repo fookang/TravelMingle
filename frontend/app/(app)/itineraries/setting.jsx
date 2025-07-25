@@ -9,14 +9,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 const setting = () => {
-  const { itinerary, setItinerary, fetchItinerary, deleteItinerary } =
+  const { itinerary, setItinerary, fetchItineraryDetail, deleteItinerary } =
     useItinerary();
   const router = useRouter();
 
   if (!itinerary) return null;
 
   useEffect(() => {
-    if (itinerary) fetchItinerary(itinerary.id);
+    if (itinerary) fetchItineraryDetail(itinerary.id);
   }, []);
 
   const getDate = () => {

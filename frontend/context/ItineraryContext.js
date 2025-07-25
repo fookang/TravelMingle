@@ -1,14 +1,22 @@
 import { createContext, useState, useContext } from "react";
 import api from "../services/api";
-import { useRouter } from "expo-router";
 
 const ItineraryContext = createContext();
 
 export const ItineraryProvider = ({ children }) => {
   const [itinerary, setItinerary] = useState();
-  const router = useRouter();
 
-  const fetchItinerary = async (id) => {
+  const fetchItineraryDayDetail = async (itinerary_id, day_id) => {
+    try {
+      const response = await api.get(`/itinerary/${id}/day/${day_id}/`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchItineraryDetail = async (id) => {
     try {
       const response = await api.get(`/itinerary/${id}/`);
       console.log(response.data);
@@ -55,9 +63,10 @@ export const ItineraryProvider = ({ children }) => {
       value={{
         itinerary,
         setItinerary,
-        fetchItinerary,
+        fetchItineraryDetail,
         updateItinerary,
         deleteItinerary,
+        fetchItineraryDayDetail,
       }}
     >
       {children}

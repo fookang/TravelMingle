@@ -67,11 +67,10 @@ const ItineraryDetails = () => {
         <TouchableOpacity
           onPress={() => {
             router.push({
-              pathname: `/itineraries/${id}/days/createDay`,
+              pathname: `/itineraries/${itinerary.id}/days/createDay`,
               params: {
-                id: id,
-                start_date: start_date,
-                end_date: end_date,
+                start_date: itinerary.start_date,
+                end_date: itinerary.end_date,
               },
             });
           }}
