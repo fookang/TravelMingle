@@ -14,10 +14,14 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { formatDate, formatAsYYYYMMDD } from "../../constants/fomatDate";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import { fabStyle, itemStyle } from "../../utils/styles/common";
 
 const Home = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   const [currentItineraries, setCurrentItineraries] = useState([]);
   const [upcomingItineraries, setUpcomingItineraries] = useState([]);
   const [pastItineraries, setPastItineraries] = useState([]);
@@ -63,7 +67,7 @@ const Home = () => {
   const renderItem = (item) => (
     <TouchableOpacity
       key={item.id}
-      style={styles.content}
+      style={itemStyle(theme, { justifyContent: "space-between" })}
       onPress={() => {
         router.push({
           pathname: `itineraries/itinerary`,
@@ -76,10 +80,10 @@ const Home = () => {
         });
       }}
     >
-      <Text style={styles.item}>{item.title}</Text>
+      <Text style={styles.title}>{item.title}</Text>
       <View>
-        <Text style={styles.item}>{formatDate(item.start_date)}</Text>
-        <Text style={styles.item}>{formatDate(item.end_date)}</Text>
+        <Text style={styles.dateItem}>{formatDate(item.start_date)}</Text>
+        <Text style={styles.dateItem}>{formatDate(item.end_date)}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -96,19 +100,14 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ProtectedRoute>
-        <ScrollView style={{ paddingHorizontal: 20 }}>
+        <ScrollView
+          style={{ paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingBottom: 70 }}
+        >
           <View style={styles.header}>
             <Text style={{ fontSize: 25, fontWeight: "bold" }}>
               Welcome back
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                router.push("/(app)/itineraries/createItinerary");
-              }}
-              style={styles.button}
-            >
-              <Icon name="add" size={15} color="black" />
-            </TouchableOpacity>
           </View>
 
           <View style={styles.itineraryList}>
@@ -160,6 +159,15 @@ const Home = () => {
             )}
           </View>
         </ScrollView>
+
+        <TouchableOpacity
+          onPress={() => {
+            router.push("/(app)/itineraries/createItinerary");
+          }}
+          style={fabStyle(theme)}
+        >
+          <Icon name="add" size={15} color={theme.floatingButtonText} />
+        </TouchableOpacity>
       </ProtectedRoute>
     </SafeAreaView>
   );
@@ -167,49 +175,43 @@ const Home = () => {
 
 export default Home;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#DDDDDD",
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    borderRadius: 10,
-  },
-  content: {
-    marginBottom: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 1)",
-    borderRadius: 8,
-  },
-  itineraryList: {
-    marginTop: 10,
-  },
-  item: {
-    fontSize: 16,
-    paddingVertical: 4,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  sectionContent: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingHorizontal: 10,
-  },
-});
+const createStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 10,
+      backgroundColor: theme.backgroundColor,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 10,
+      paddingHorizontal: 10,
+      alignItems: "center",
+    },
+    itineraryList: {
+      marginTop: 10,
+    },
+    title: {
+      fontSize: 16,
+      paddingVertical: 4,
+      color: theme.textPrimary,
+    },
+    dateItem: {
+      fontSize: 16,
+      paddingVertical: 4,
+      color: theme.textSecondary,
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    sectionContent: {
+      fontSize: 18,
+      fontWeight: "bold",
+      paddingHorizontal: 10,
+      color: theme.textPrimary,
+    },
+  });
