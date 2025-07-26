@@ -68,11 +68,15 @@ class ItineraryDay(models.Model):
 
 
 class Activity(models.Model):
-    itineraryDay = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
+    itinerary_day = models.ForeignKey(ItineraryDay, on_delete=models.CASCADE)
     time = models.TimeField()
     title = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    location_name = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} - {self.time}"

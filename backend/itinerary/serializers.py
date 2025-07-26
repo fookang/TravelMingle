@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Itinerary, ItineraryDay, Activity, Document, Collaborator
 User = get_user_model()
 
+
 class ItinerarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Itinerary
@@ -21,8 +22,8 @@ class ItinerarySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
-        
-        
+
+
 class CollaboratorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collaborator
@@ -51,6 +52,7 @@ class ItineraryDaySerializer(serializers.ModelSerializer):
             'date',
             'itinerary_title'
         ]
+        read_only_fields = ['id']
 
 
 class ActivitySerializer(serializers.ModelSerializer):
@@ -59,5 +61,10 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
-            'time'
+            'time',
+            'location_name',
+            'address',
+            'longitude',
+            'latitude'
         ]
+        read_only_fields = ['id']
