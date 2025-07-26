@@ -1,15 +1,45 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  useAnimatedValue,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
 import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import api from "../../../../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Linking } from "react-native";
 
 const ItineraryDayDetails = () => {
   const router = useRouter();
   const { title, day_id, id } = useLocalSearchParams();
   const [activity, setActivity] = useState([]);
+  const [showNoLocation, setShowNoLocation] = useState(false);
+  const fadeAnim = useAnimatedValue(0);
+
+  const showToast = () => {
+    if (showNoLocation) return;
+
+    setShowNoLocation(true);
+    Animated.sequence([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.delay(1400),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setShowNoLocation(false));
+  };
 
   const displayTime = (timeStr) => {
     const [hh, mm, ss] = timeStr.split(":");
@@ -39,7 +69,14 @@ const ItineraryDayDetails = () => {
     <TouchableOpacity
       key={item.id}
       style={styles.item}
-      onPress={() => console.log("Activity", item.id)}
+      onPress={() => {
+        if (item.latitude && item.longitude) {
+          const url = `https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`;
+          Linking.openURL(url);
+        } else {
+          showToast();
+        }
+      }}
     >
       <Text style={styles.time}>{displayTime(item.time)}</Text>
       <Text style={styles.title}>{item.title}</Text>
@@ -48,27 +85,34 @@ const ItineraryDayDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Header title={title} />
-        <TouchableOpacity
-          onPress={() => {
-            router.push(
-              `/itineraries/${id}/days/${day_id}/activity/createActivity`
-            );
-          }}
-          style={styles.button}
-        >
-          <Icon name="add" size={15} color="black" />
-        </TouchableOpacity>
-      </View>
-      {activity.length === 0 ? (
-        <Text style={{ textAlign: "center", marginTop: 20 }}>
-          No activity added yet.
-        </Text>
-      ) : (
-        <View style={styles.content}>
-          {activity.map((item) => renderItem(item))}
+      <ScrollView>
+        <View style={styles.header}>
+          <Header title={title} />
+          <TouchableOpacity
+            onPress={() => {
+              router.push(
+                `/itineraries/${id}/days/${day_id}/activity/createActivity`
+              );
+            }}
+            style={styles.button}
+          >
+            <Icon name="add" size={15} color="black" />
+          </TouchableOpacity>
         </View>
+        {activity.length === 0 ? (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No activity added yet.
+          </Text>
+        ) : (
+          <View style={styles.content}>
+            {activity.map((item) => renderItem(item))}
+          </View>
+        )}
+      </ScrollView>
+      {showNoLocation && (
+        <Animated.View style={styles.toast}>
+          <Text style={styles.toastText}>No location found</Text>
+        </Animated.View>
       )}
     </SafeAreaView>
   );
@@ -114,5 +158,22 @@ const styles = StyleSheet.create({
   title: {
     color: "#333",
     fontSize: 15,
+  },
+  toast: {
+    position: "absolute",
+    bottom: 40,
+    alignSelf: "center",
+    backgroundColor: "#333",
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+    zIndex: 999,
+    opacity: 0.7,
+  },
+  toastText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 15,
+    letterSpacing: 0.2,
   },
 });
