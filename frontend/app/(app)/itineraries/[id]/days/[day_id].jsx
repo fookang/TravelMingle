@@ -70,7 +70,15 @@ const ItineraryDayDetails = () => {
       key={item.id}
       style={styles.item}
       onPress={() => {
-        if (item.latitude && item.longitude) {
+        if (item.location_name) {
+          const encoded = encodeURIComponent(item.location_name);
+          const url = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+          Linking.openURL(url);
+        } else if (item.address) {
+          const encodedAddress = encodeURIComponent(item.address);
+          const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+          Linking.openURL(url);
+        } else if (item.latitude && item.longitude) {
           const url = `https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`;
           Linking.openURL(url);
         } else {
