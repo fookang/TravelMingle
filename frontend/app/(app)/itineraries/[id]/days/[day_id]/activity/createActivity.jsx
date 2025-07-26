@@ -115,22 +115,28 @@ const createActivity = () => {
     try {
       setLoading(true);
 
+      // Format time as "HH:mm"
       const formattedTime = time.value
         ? time.value.getHours().toString().padStart(2, "0") +
           ":" +
           time.value.getMinutes().toString().padStart(2, "0")
         : "";
 
-      console.log(formattedTime);
+      // Build payload with null fallback for optional fields
+      const payload = {
+        title: title.value.trim(),
+        time: formattedTime,
+        longitude: map.location?.longitude ?? null,
+        latitude: map.location?.latitude ?? null,
+        address: map.address?.trim() || null,
+        location_name: map.locationName?.trim() || null,
+      };
 
       const response = await api.post(
         `itinerary/${id}/days/${day_id}/activities/`,
-        {
-          title: title.value,
-          time: formattedTime,
-        }
+        payload
       );
-      if (response) {
+      if (response && response.status === 201) {
         router.back();
       } else {
         Alert.alert("Error", "An error occured. Please try again");
