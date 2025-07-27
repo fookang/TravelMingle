@@ -286,64 +286,6 @@ const createActivity = () => {
 
 export default createActivity;
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     paddingTop: 10,
-//     backgroundColor: "#FAFAFC",
-//   },
-//   content: {
-//     marginHorizontal: 20,
-//     marginTop: 10,
-//   },
-//   input: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     marginBottom: 10,
-//   },
-//   inputText: {
-//     flex: 1,
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 10,
-//     marginLeft: 10,
-//     paddingHorizontal: 10,
-//     paddingVertical: 7,
-//   },
-//   errorText: {
-//     color: "red",
-//     marginBottom: 10,
-//   },
-//   button: {
-//     width: "100%",
-//     backgroundColor: "#007bff",
-//     padding: 12,
-//     alignItems: "center",
-//     borderRadius: 8,
-//   },
-//   buttonDisabled: {
-//     backgroundColor: "#5e7791",
-//   },
-//   buttonText: {
-//     color: "black",
-//     fontWeight: "bold",
-//   },
-//   label: {
-//     fontWeight: "500",
-//     fontSize: 17,
-//   },
-//   timeValue: {
-//     marginLeft: 8,
-//     color: "#333",
-//   },
-//   required: {
-//     color: "red",
-//   },
-//   map: {
-//     flex: 1,
-//   },
-// });
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

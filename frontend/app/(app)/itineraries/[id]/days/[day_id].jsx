@@ -4,8 +4,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Animated,
-  useAnimatedValue,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
@@ -13,37 +11,18 @@ import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useCallback, useState, useRef } from "react";
 import api from "../../../../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Linking } from "react-native";
+import ActivityList from "../../../../components/ActivityList";
+import ShowToast from "../../../../components/ShowToast";
 
 const ItineraryDayDetails = () => {
   const router = useRouter();
   const { title, day_id, id } = useLocalSearchParams();
   const [activity, setActivity] = useState([]);
   const [showNoLocation, setShowNoLocation] = useState(false);
-  const fadeAnim = useAnimatedValue(0);
 
   const showToast = () => {
     if (showNoLocation) return;
-
     setShowNoLocation(true);
-    Animated.sequence([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.delay(1400),
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start(() => setShowNoLocation(false));
-  };
-
-  const displayTime = (timeStr) => {
-    const [hh, mm, ss] = timeStr.split(":");
-    return `${hh}:${mm}`;
   };
 
   const fetchItineraryDay = async () => {
@@ -63,32 +42,6 @@ const ItineraryDayDetails = () => {
     useCallback(() => {
       fetchItineraryDay();
     }, [])
-  );
-
-  const renderItem = (item) => (
-    <TouchableOpacity
-      key={item.id}
-      style={styles.item}
-      onPress={() => {
-        if (item.location_name) {
-          const encoded = encodeURIComponent(item.location_name);
-          const url = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-          Linking.openURL(url);
-        } else if (item.address) {
-          const encodedAddress = encodeURIComponent(item.address);
-          const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-          Linking.openURL(url);
-        } else if (item.latitude && item.longitude) {
-          const url = `https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`;
-          Linking.openURL(url);
-        } else {
-          showToast();
-        }
-      }}
-    >
-      <Text style={styles.time}>{displayTime(item.time)}</Text>
-      <Text style={styles.title}>{item.title}</Text>
-    </TouchableOpacity>
   );
 
   return (
@@ -113,14 +66,18 @@ const ItineraryDayDetails = () => {
           </Text>
         ) : (
           <View style={styles.content}>
-            {activity.map((item) => renderItem(item))}
+            {activity.map((item) => (
+              <ActivityList item={item} key={item.id} showToast={showToast} />
+            ))}
           </View>
         )}
       </ScrollView>
       {showNoLocation && (
-        <Animated.View style={styles.toast}>
-          <Text style={styles.toastText}>No location found</Text>
-        </Animated.View>
+        <ShowToast
+          visible={showNoLocation}
+          message={"No location found"}
+          onHide={() => setShowNoLocation(false)}
+        />
       )}
     </SafeAreaView>
   );
@@ -147,41 +104,5 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-  },
-  item: {
-    flexDirection: "row",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderColor: "#eee",
-    marginBottom: 8,
-    borderRadius: 8,
-    backgroundColor: "#fafafa",
-  },
-  time: {
-    fontWeight: "bold",
-    paddingRight: 20,
-    fontSize: 15,
-    width: 70,
-  },
-  title: {
-    color: "#333",
-    fontSize: 15,
-  },
-  toast: {
-    position: "absolute",
-    bottom: 40,
-    alignSelf: "center",
-    backgroundColor: "#333",
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 20,
-    zIndex: 999,
-    opacity: 0.7,
-  },
-  toastText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 15,
-    letterSpacing: 0.2,
   },
 });
