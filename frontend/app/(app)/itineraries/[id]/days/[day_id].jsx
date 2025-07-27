@@ -4,11 +4,12 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
 import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState } from "react";
 import api from "../../../../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ActivityList from "../../../../components/ActivityList";
@@ -36,6 +37,43 @@ const ItineraryDayDetails = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleEdit = ({ id, day_id, activity_id }) => {
+    router.push({
+      pathname: `/itineraries/${id}/days/${day_id}/activity/editActivity`,
+      params: {
+        activity_id,
+      },
+    });
+  };
+
+  const handleDelete = async ({ id, day_id, activity_id }) => {
+    Alert.alert(
+      "Delete Activity",
+      "Are you sure you want to delete this activity? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await api.delete(
+                `itinerary/${id}/days/${day_id}/activities/${activity_id}/`
+              );
+              fetchItineraryDay();
+            } catch (error) {
+              Alert.alert(
+                "Error",
+                "Could not delete activity. Please try again."
+              );
+              console.log(error);
+            }
+          },
+        },
+      ]
+    );
   };
 
   useFocusEffect(
@@ -67,7 +105,17 @@ const ItineraryDayDetails = () => {
         ) : (
           <View style={styles.content}>
             {activity.map((item) => (
-              <ActivityList item={item} key={item.id} showToast={showToast} />
+              <ActivityList
+                item={item}
+                key={item.id}
+                showToast={showToast}
+                handleEdit={() =>
+                  handleEdit({ id, day_id, activity_id: item.id })
+                }
+                handleDelete={() =>
+                  handleDelete({ id, day_id, activity_id: item.id })
+                }
+              />
             ))}
           </View>
         )}
