@@ -20,8 +20,6 @@ export const itemStyle = (theme, extra = {}) => ({
   flexDirection: "row",
   alignItems: "center",
   padding: 16,
-  borderBottomWidth: 1,
-  borderColor: theme.border,
   marginBottom: 8,
   borderRadius: 8,
   backgroundColor: theme.card,

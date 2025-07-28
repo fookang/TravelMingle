@@ -34,7 +34,7 @@ export default ShowToast;
 const styles = StyleSheet.create({
   toast: {
     position: "absolute",
-    bottom: 40,
+    bottom: 50,
     alignSelf: "center",
     backgroundColor: "#333",
     paddingHorizontal: 24,

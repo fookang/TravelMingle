@@ -187,7 +187,6 @@ const createStyles = (theme) =>
     },
     title: {
       fontSize: 16,
-      paddingVertical: 4,
       color: theme.textPrimary,
     },
     dateItem: {

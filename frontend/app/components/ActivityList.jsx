@@ -2,11 +2,15 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Linking } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
+import { itemStyle } from "../../utils/styles/common";
 
 const ActivityList = ({ item, showToast, handleEdit, handleDelete }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0 });
   const iconRef = useRef();
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
 
   const displayTime = (timeStr) => {
     const [hh, mm, ss] = timeStr.split(":");
@@ -21,7 +25,7 @@ const ActivityList = ({ item, showToast, handleEdit, handleDelete }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={itemStyle(theme, { alignItems: "center" })}>
       <TouchableOpacity
         style={styles.item}
         onPress={() => {
@@ -41,8 +45,10 @@ const ActivityList = ({ item, showToast, handleEdit, handleDelete }) => {
           }
         }}
       >
-        <Text style={styles.time}>{displayTime(item.time)}</Text>
-        <Text style={styles.title}>{item.title}</Text>
+        <View style={styles.label}>
+          <Text style={styles.time}>{displayTime(item.time)}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -98,55 +104,44 @@ const ActivityList = ({ item, showToast, handleEdit, handleDelete }) => {
 
 export default ActivityList;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#fafafa",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: "#eee",
-    marginBottom: 8,
-    borderRadius: 8,
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  item: {
-    flexDirection: "row",
-    flex: 1,
-    paddingLeft: 16,
-  },
-  time: {
-    fontWeight: "bold",
-    paddingRight: 20,
-    fontSize: 15,
-    width: 70,
-  },
-  title: {
-    color: "#333",
-    fontSize: 15,
-  },
-  iconButton: {
-    paddingHorizontal: 16,
-  },
-  icon: {
-    fontSize: 15,
-  },
-  overlay: {
-    flex: 1,
-    alignItems: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.2)",
-  },
-  menu: {
-    position: "absolute",
-    backgroundColor: "white",
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 16,
-    width: 120,
-  },
-  menuItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-});
+const createStyles = (theme) =>
+  StyleSheet.create({
+    item: {
+      flexDirection: "row",
+      flex: 1,
+    },
+    label: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    time: {
+      fontWeight: "bold",
+      fontSize: 16,
+      width: 70,
+    },
+    title: {
+      fontSize: 16,
+      paddingVertical: 4,
+      color: theme.textPrimary,
+    },
+    icon: {
+      fontSize: 16,
+    },
+    overlay: {
+      flex: 1,
+      alignItems: "flex-end",
+      backgroundColor: "rgba(0,0,0,0.2)",
+    },
+    menu: {
+      position: "absolute",
+      backgroundColor: "white",
+      padding: 8,
+      borderRadius: 8,
+      marginRight: 20,
+      width: 120,
+    },
+    menuItem: {
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+    },
+  });

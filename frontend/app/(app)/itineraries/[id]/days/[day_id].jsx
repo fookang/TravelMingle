@@ -15,6 +15,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import ActivityList from "../../../../components/ActivityList";
 import ShowToast from "../../../../components/ShowToast";
 import { useItinerary } from "../../../../../context/ItineraryContext";
+import FloatingButton from "../../../../components/FloatingButton";
 
 const ItineraryDayDetails = () => {
   const router = useRouter();
@@ -91,16 +92,6 @@ const ItineraryDayDetails = () => {
           <Header title={header_title} />
           <TouchableOpacity
             onPress={() => {
-              router.push(
-                `/itineraries/${id}/days/${day_id}/activity/createActivity`
-              );
-            }}
-            style={styles.button}
-          >
-            <Icon name="add" size={15} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
               router.push({
                 pathname: `/itineraries/${id}/days/editDay`,
                 params: {
@@ -150,6 +141,10 @@ const ItineraryDayDetails = () => {
           onHide={() => setShowNoLocation(false)}
         />
       )}
+      <FloatingButton
+        url={`/itineraries/${id}/days/${day_id}/activity/createActivity`}
+        style={{ bottom: 70 }}
+      />
     </SafeAreaView>
   );
 };
@@ -167,13 +162,8 @@ const styles = StyleSheet.create({
     marginRight: 30,
     alignItems: "center",
   },
-  button: {
-    backgroundColor: "#DDDDDD",
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    borderRadius: 10,
-  },
   content: {
-    padding: 16,
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
 });
