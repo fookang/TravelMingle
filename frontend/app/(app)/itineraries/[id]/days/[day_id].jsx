@@ -112,9 +112,13 @@ const ItineraryDayDetails = () => {
                 },
               });
             }}
-            style={styles.button}
           >
-            <Icon name="add" size={15} color="black" />
+            <Icon
+              name="settings"
+              size={15}
+              color="black"
+              style={{ fontSize: 24 }}
+            />
           </TouchableOpacity>
         </View>
         {activity.length === 0 ? (
