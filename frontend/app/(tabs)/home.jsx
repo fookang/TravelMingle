@@ -10,12 +10,13 @@ import { useRouter, useFocusEffect } from "expo-router";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useCallback, useState } from "react";
 import api from "../../services/api";
-import Icon from "react-native-vector-icons/MaterialIcons";
+
 import { formatDate, formatAsYYYYMMDD } from "../../constants/fomatDate";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
-import { fabStyle, itemStyle } from "../../utils/styles/common";
+import { itemStyle } from "../../utils/styles/common";
+import FloatingButton from "../components/FloatingButton";
 
 const Home = () => {
   const router = useRouter();
@@ -159,15 +160,7 @@ const Home = () => {
             )}
           </View>
         </ScrollView>
-
-        <TouchableOpacity
-          onPress={() => {
-            router.push("/(app)/itineraries/createItinerary");
-          }}
-          style={fabStyle(theme)}
-        >
-          <Icon name="add" size={15} color={theme.floatingButtonText} />
-        </TouchableOpacity>
+        <FloatingButton url="/(app)/itineraries/createItinerary" />
       </ProtectedRoute>
     </SafeAreaView>
   );

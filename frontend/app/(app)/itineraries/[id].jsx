@@ -7,9 +7,13 @@ import api from "../../../services/api";
 import { formatDate } from "../../../constants/fomatDate";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useItinerary } from "../../../context/ItineraryContext";
+import { itemStyle } from "../../../utils/styles/common";
+import { useTheme } from "../../../context/ThemeContext";
 
 const ItineraryDetails = () => {
   const router = useRouter();
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   const { itinerary } = useItinerary();
   const [itineraryDay, setItineraryDay] = useState([]);
 
@@ -36,7 +40,7 @@ const ItineraryDetails = () => {
   const renderItem = (item) => (
     <TouchableOpacity
       key={item.id}
-      style={styles.item}
+      style={itemStyle(theme, { justifyContent: "space-between" })}
       onPress={() => {
         router.push({
           pathname: `/itineraries/${itinerary.id}/days/${item.id}`,
@@ -95,46 +99,40 @@ const ItineraryDetails = () => {
 
 export default ItineraryDetails;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginRight: 30,
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#DDDDDD",
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    borderRadius: 10,
-  },
-  content: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  item: {
-    marginBottom: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderBottomWidth: 1,
-    borderColor: "#eee",
-    alignItems: "center",
-    padding: 16,
-    backgroundColor: "#fafafa",
-    borderRadius: 8,
-  },
-  title: {
-    color: "#333",
-    fontSize: 15,
-  },
-  day: {
-    fontWeight: "bold",
-    paddingRight: 20,
-    fontSize: 15,
-    width: "70",
-  },
-});
+const createStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 10,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginRight: 30,
+      alignItems: "center",
+    },
+    button: {
+      backgroundColor: "#DDDDDD",
+      paddingHorizontal: 15,
+      paddingVertical: 7,
+      borderRadius: 10,
+    },
+    content: {
+      paddingHorizontal: 20,
+      marginTop: 20,
+    },
+    title: {
+      fontSize: 16,
+      paddingVertical: 4,
+      color: theme.textPrimary,
+    },
+    day: {
+      fontWeight: "bold",
+      paddingRight: 20,
+      fontSize: 16,
+      width: "70",
+    },
+    date: {
+      fontSize: 16, paddingVertical: 4, color: theme.textSecondary
+    },
+  });
