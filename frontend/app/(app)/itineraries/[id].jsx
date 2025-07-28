@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import api from "../../../services/api";
-import { formatDate } from "../../../constants/fomatDate";
+import { formatDate, parseYYYYMMDD } from "../../../constants/fomatDate";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useItinerary } from "../../../context/ItineraryContext";
 
@@ -41,7 +41,9 @@ const ItineraryDetails = () => {
         router.push({
           pathname: `/itineraries/${itinerary.id}/days/${item.id}`,
           params: {
-            title: `Day ${getDayNumber(item.date)}: ${item.title}`,
+            header_title: `Day ${getDayNumber(item.date)}: ${item.title}`,
+            title: item.title,
+            date: item.date,
           },
         });
       }}

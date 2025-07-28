@@ -14,10 +14,12 @@ import api from "../../../../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ActivityList from "../../../../components/ActivityList";
 import ShowToast from "../../../../components/ShowToast";
+import { useItinerary } from "../../../../../context/ItineraryContext";
 
 const ItineraryDayDetails = () => {
   const router = useRouter();
-  const { title, day_id, id } = useLocalSearchParams();
+  const { itinerary } = useItinerary();
+  const { title, header_title, day_id, id, date } = useLocalSearchParams();
   const [activity, setActivity] = useState([]);
   const [showNoLocation, setShowNoLocation] = useState(false);
 
@@ -86,12 +88,29 @@ const ItineraryDayDetails = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.header}>
-          <Header title={title} />
+          <Header title={header_title} />
           <TouchableOpacity
             onPress={() => {
               router.push(
                 `/itineraries/${id}/days/${day_id}/activity/createActivity`
               );
+            }}
+            style={styles.button}
+          >
+            <Icon name="add" size={15} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: `/itineraries/${id}/days/editDay`,
+                params: {
+                  day_id: day_id,
+                  start_date: itinerary.start_date,
+                  end_date: itinerary.end_date,
+                  title,
+                  date,
+                },
+              });
             }}
             style={styles.button}
           >
