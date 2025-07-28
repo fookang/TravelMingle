@@ -1,21 +1,21 @@
-import { Alert, StyleSheet } from "react-native";
-import api from "../../../../../services/api";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../../../components/Header";
-
 import DayForm from "../../../../components/DayForm";
+import api from "../../../../../services/api";
 
-const createDay = () => {
-  const router = useRouter();
-  const { id, start_date, end_date } = useLocalSearchParams();
+const editDay = () => {
+  const { id, day_id, start_date, end_date, title, date } =
+    useLocalSearchParams();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleCreate = async ({ title, date }) => {
+  const handleEdit = async ({ title, date }) => {
     try {
       setLoading(true);
-      const response = await api.post(`itinerary/${id}/days/`, {
+      const response = await api.patch(`itinerary/${id}/days/${day_id}/`, {
         title,
         date: date.toISOString().split("T")[0],
       });
@@ -33,25 +33,20 @@ const createDay = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header title="Create new Itinerary Day" />
+    <SafeAreaView>
+      <Header title="Edit Day" />
       <DayForm
-        handleCreate={handleCreate}
+        handleAction={handleEdit}
         start_date={start_date}
         end_date={end_date}
         loading={loading}
-        title=""
-        date={undefined}
+        title={title}
+        date={date}
       />
     </SafeAreaView>
   );
 };
 
-export default createDay;
+export default editDay;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
-});
+const styles = StyleSheet.create({});

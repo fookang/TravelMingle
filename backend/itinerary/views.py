@@ -66,13 +66,13 @@ class ActivityListCreate(generics.ListCreateAPIView):
         day = get_object_or_404(
             ItineraryDay,
             id=self.kwargs["day_id"], itinerary__user=self.request.user)
-        return Activity.objects.filter(itineraryDay=day)
+        return Activity.objects.filter(itinerary_day=day)
 
     def perform_create(self, serializer):
         day = get_object_or_404(
             ItineraryDay,
             id=self.kwargs["day_id"], itinerary__user=self.request.user)
-        serializer.save(itineraryDay=day)
+        serializer.save(itinerary_day=day)
 
 
 class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -85,4 +85,4 @@ class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
         day = get_object_or_404(
             ItineraryDay,
             id=self.kwargs["day_id"], itinerary__user=self.request.user)
-        return Activity.objects.filter(itineraryDay=day)
+        return Activity.objects.filter(itinerary_day=day)
