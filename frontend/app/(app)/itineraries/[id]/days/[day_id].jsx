@@ -42,11 +42,11 @@ const ItineraryDayDetails = () => {
     }
   };
 
-  const handleEdit = ({ id, day_id, activity_id }) => {
+  const handleEdit = ({ id, day_id, item }) => {
     router.push({
       pathname: `/itineraries/${id}/days/${day_id}/activity/editActivity`,
       params: {
-        activity_id,
+        item: JSON.stringify(item),
       },
     });
   };
@@ -123,9 +123,7 @@ const ItineraryDayDetails = () => {
                 item={item}
                 key={item.id}
                 showToast={showToast}
-                handleEdit={() =>
-                  handleEdit({ id, day_id, activity_id: item.id })
-                }
+                handleEdit={() => handleEdit({ id, day_id, item })}
                 handleDelete={() =>
                   handleDelete({ id, day_id, activity_id: item.id })
                 }

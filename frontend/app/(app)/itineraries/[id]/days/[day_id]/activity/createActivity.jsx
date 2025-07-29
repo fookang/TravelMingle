@@ -11,25 +11,31 @@ const createActivity = () => {
   const { id, day_id } = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
 
-  const handleCreate = async ({ title, time, map }) => {
+  const handleCreate = async ({
+    title,
+    time,
+    location,
+    address,
+    locationName,
+  }) => {
     try {
       setLoading(true);
 
       // Format time as "HH:mm"
-      const formattedTime = time.value
-        ? time.value.getHours().toString().padStart(2, "0") +
+      const formattedTime = time
+        ? time.getHours().toString().padStart(2, "0") +
           ":" +
-          time.value.getMinutes().toString().padStart(2, "0")
+          time.getMinutes().toString().padStart(2, "0")
         : "";
 
       // Build payload with null fallback for optional fields
       const payload = {
-        title: title.value.trim(),
+        title: title.trim(),
         time: formattedTime,
-        longitude: map.location?.longitude ?? null,
-        latitude: map.location?.latitude ?? null,
-        address: map.address?.trim() || null,
-        location_name: map.locationName?.trim() || null,
+        longitude: location?.longitude ?? null,
+        latitude: location?.latitude ?? null,
+        address: address?.trim() || null,
+        location_name: locationName?.trim() || null,
       };
 
       const response = await api.post(

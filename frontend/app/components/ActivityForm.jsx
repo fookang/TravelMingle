@@ -5,15 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import GooglePlacesTextInput from "react-native-google-places-textinput";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Constants from "expo-constants";
 
 //#region Define state for useReducer for title
-const titleInitial = { value: "", error: false };
-
 function titleReducer(state, action) {
   switch (action.type) {
     case "SET":
@@ -27,8 +25,6 @@ function titleReducer(state, action) {
 //#endregion
 
 //#region Define state for useReducer for time
-const timeInitial = { value: null, error: false, showPicker: false };
-
 function timeReducer(state, action) {
   switch (action.type) {
     case "SET":
@@ -46,19 +42,6 @@ function timeReducer(state, action) {
 //#endregion
 
 //#region Define state for useReducer for map
-const mapInitial = {
-  location: null,
-  region: {
-    latitude: 1.3521, // Singapore default
-    longitude: 103.8198,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  },
-  locationName: "",
-  address: "",
-  error: false,
-};
-
 function mapReducer(state, action) {
   switch (action.type) {
     case "SET":
@@ -83,7 +66,43 @@ function mapReducer(state, action) {
 
 //#endregion
 
-const ActivityForm = ({ handleAction, loading }) => {
+const ActivityForm = ({ handleAction, loading, item = null }) => {
+  // Convert time into Date object
+  const parseTime = (str) => {
+    if (!str) return null;
+    const [hh, mm, ss] = str.split(":");
+    const date = new Date();
+    date.setHours(Number(hh));
+    date.setMinutes(Number(mm));
+    date.setSeconds(ss);
+    date.setMilliseconds(0);
+    return date;
+  };
+
+  const titleInitial = {
+    value: item ? item.title : "",
+    error: false,
+  };
+  const timeInitial = {
+    value: item ? parseTime(item.time) : null,
+    error: false,
+    showPicker: false,
+  };
+  const mapInitial = {
+    location:
+      item && item.latitude && item.longitude
+        ? { latitude: item.latitude, longitude: item.longitude }
+        : null,
+    region: {
+      latitude: item ? item.latitude : 1.3521,
+      longitude: item ? item.longitude : 103.8198,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    },
+    locationName: item ? item.location_name : "",
+    address: item ? item.address : "",
+    error: false,
+  };
   const [title, dispatchTitle] = useReducer(titleReducer, titleInitial);
   const [time, dispatchTime] = useReducer(timeReducer, timeInitial);
   const [map, dispatchMap] = useReducer(mapReducer, mapInitial);
@@ -166,6 +185,7 @@ const ActivityForm = ({ handleAction, loading }) => {
           fetchDetails={true}
           showLoadingIndicator={true}
           showClearButton={true}
+          value={item.location_name ? item.location_name : ""}
           detailsFields={["formattedAddress", "location", "displayName"]}
           style={{
             container: {
@@ -217,9 +237,11 @@ const ActivityForm = ({ handleAction, loading }) => {
         onPress={() => {
           if (checkValid())
             handleAction({
-              title,
-              time,
-              map,
+              title: title.value,
+              time: time.value,
+              location: map.location,
+              address: map.address,
+              locationName: map.locationName,
             });
         }}
         style={[styles.button, loading && styles.buttonDisabled]}
