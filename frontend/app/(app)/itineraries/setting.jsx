@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import { useItinerary } from "../../../context/ItineraryContext";
 import { useEffect } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { formatDate } from "../../../constants/fomatDate";
+import { formatDate } from "../../../utils/Date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 

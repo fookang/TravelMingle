@@ -10,8 +10,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useCallback, useState } from "react";
 import api from "../../services/api";
-
-import { formatDate, formatAsYYYYMMDD } from "../../constants/fomatDate";
+import { formatDate, formatAsYYYYMMDD } from "../../utils/Date";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";

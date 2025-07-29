@@ -13,7 +13,7 @@ import {
   parseYYYYMMDD,
   displayDate,
   formatAsYYYYMMDD,
-} from "../../../constants/fomatDate";
+} from "../../../utils/Date";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";

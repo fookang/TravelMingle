@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { parseYYYYMMDD, displayDate } from "../../constants/fomatDate";
+import { parseYYYYMMDD, displayDate } from "../../utils/Date";
 
 const DayForm = ({
   handleAction,

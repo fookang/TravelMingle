@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatAsYYYYMMDD, displayDate } from "../../../constants/fomatDate";
+import { formatAsYYYYMMDD, displayDate } from "../../../utils/Date";
 
 const createItinerary = () => {
   const router = useRouter();

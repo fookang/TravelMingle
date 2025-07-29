@@ -10,8 +10,8 @@ import Header from "../../components/Header";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import api from "../../../services/api";
-import { formatDate, parseYYYYMMDD } from "../../../constants/fomatDate";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { formatDate, getDayNumber } from "../../../utils/Date";
+
 import { useItinerary } from "../../../context/ItineraryContext";
 import { itemStyle } from "../../../utils/styles/common";
 import { useTheme } from "../../../context/ThemeContext";
@@ -37,13 +37,6 @@ const ItineraryDetails = () => {
     }
   };
 
-  const getDayNumber = (date) => {
-    const start = new Date(itinerary.start_date);
-    const current = new Date(date);
-    const diff = Math.floor((current - start) / (1000 * 24 * 60 * 60) + 1);
-    return diff;
-  };
-
   const renderItem = (item) => (
     <TouchableOpacity
       key={item.id}
@@ -52,7 +45,10 @@ const ItineraryDetails = () => {
         router.push({
           pathname: `/itineraries/${itinerary.id}/days/${item.id}`,
           params: {
-            header_title: `Day ${getDayNumber(item.date)}: ${item.title}`,
+            header_title: `Day ${getDayNumber(
+              item.date,
+              itinerary.start_date
+            )}: ${item.title}`,
             title: item.title,
             date: item.date,
           },
@@ -60,7 +56,9 @@ const ItineraryDetails = () => {
       }}
     >
       <View style={styles.label}>
-        <Text style={styles.day}>Day {getDayNumber(item.date)}</Text>
+        <Text style={styles.day}>
+          Day {getDayNumber(item.date, itinerary.start_date)}
+        </Text>
         <Text style={styles.title}>{item.title}</Text>
       </View>
       <Text style={styles.date}>{formatDate(item.date)}</Text>

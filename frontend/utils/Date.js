@@ -41,3 +41,10 @@ export const parseYYYYMMDD = (dateStr) => {
   const [yyyy, mm, dd] = dateStr.split("-");
   return new Date(Number(yyyy), Number(mm) - 1, Number(dd));
 };
+
+export const getDayNumber = (date, start_date) => {
+  const start = new Date(start_date);
+  const current = new Date(date);
+  const diff = Math.floor((current - start) / (1000 * 24 * 60 * 60) + 1);
+  return diff;
+};
