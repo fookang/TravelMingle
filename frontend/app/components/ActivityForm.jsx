@@ -99,7 +99,7 @@ const ActivityForm = ({ handleAction, loading, item = null }) => {
       latitudeDelta: 0.05,
       longitudeDelta: 0.05,
     },
-    locationName: item ? item.location_name : "",
+    locationName: item && item.location_name ? item.location_name : "",
     address: item ? item.address : "",
     error: false,
   };
@@ -185,7 +185,7 @@ const ActivityForm = ({ handleAction, loading, item = null }) => {
           fetchDetails={true}
           showLoadingIndicator={true}
           showClearButton={true}
-          value={item.location_name ? item.location_name : ""}
+          value={item?.location_name ? item.location_name : ""}
           detailsFields={["formattedAddress", "location", "displayName"]}
           style={{
             container: {

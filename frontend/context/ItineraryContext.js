@@ -6,15 +6,6 @@ const ItineraryContext = createContext();
 export const ItineraryProvider = ({ children }) => {
   const [itinerary, setItinerary] = useState();
 
-  const fetchItineraryDayDetail = async (itinerary_id, day_id) => {
-    try {
-      const response = await api.get(`/itinerary/${id}/day/${day_id}/`);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fetchItineraryDetail = async (id) => {
     try {
@@ -66,7 +57,6 @@ export const ItineraryProvider = ({ children }) => {
         fetchItineraryDetail,
         updateItinerary,
         deleteItinerary,
-        fetchItineraryDayDetail,
       }}
     >
       {children}
