@@ -21,7 +21,7 @@ const ItineraryDetails = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = createStyles(theme);
-  const { itinerary } = useItinerary();
+  const { itinerary, fetchItineraryDayList } = useItinerary();
   const [itineraryDay, setItineraryDay] = useState([]);
 
   const fetchItinerary = async () => {

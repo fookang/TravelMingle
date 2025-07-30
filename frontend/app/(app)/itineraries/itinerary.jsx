@@ -40,7 +40,12 @@ const ItineraryDetails = () => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Finance</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            router.push(`itineraries/document/document`);
+          }}
+        >
           <Text style={styles.text}>Document</Text>
         </TouchableOpacity>
       </View>

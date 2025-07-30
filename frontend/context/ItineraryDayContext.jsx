@@ -34,7 +34,9 @@ export const ItineraryDayProvider = ({ children }) => {
   };
 
   return (
-    <ItineraryDayContext.Provider value={{}}>
+    <ItineraryDayContext.Provider
+      value={{ itineraryDay, fetchItineraryDayDetail, updateItineraryDay }}
+    >
       {children}
     </ItineraryDayContext.Provider>
   );
