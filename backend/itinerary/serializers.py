@@ -25,12 +25,37 @@ class ItinerarySerializer(serializers.ModelSerializer):
 
 
 class CollaboratorSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(write_only=True)
+
     class Meta:
         model = Collaborator
         fields = [
-            'itinerary', 'user'
+            'itinerary', 'user', 'email'
         ]
         read_only_fields = ['itinerary', 'user']
+
+    def validate_email(self, attrs):
+        try:
+            user = User.objects.get(email=attrs)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No user with that email.")
+
+        self.context['collaborator_user'] = user
+        return attrs
+
+    def create(self, validated_data):
+        user = self.context['collaborator_user'] = user
+        itinerary = validated_data['itinerary']
+
+        if itinerary.user == user:
+            raise serializers.ValidationError(
+                "Cannot add the owner as collaborator.")
+
+        if Collaborator.objects.filter(user=user, itinerary=itinerary).exists():
+            raise serializers.ValidationError(
+                "User is already a collaborator")
+
+        return Collaborator.objects.create(user=user, itinerary=itinerary)
 
 
 class DocumentSerializer(serializers.ModelSerializer):
