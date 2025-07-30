@@ -14,7 +14,17 @@ class ItineraryListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Itinerary.objects.filter(user=self.request.user)
+        owned = Itinerary.objects.filter(user=self.request.user)
+        
+        collaborating_ids = Collaborator.objects.filter(
+            user=self.request.user).values_list('itinerary_id', flat=True)
+        
+        collaborating = Itinerary.objects.filter(id__in=collaborating_ids)
+        
+        return (owned | collaborating)
+
+
+        
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -60,6 +70,25 @@ class DocumentListCreate(generics.ListCreateAPIView):
             return Document.objects.none()
 
         return Document.objects.filter(itinerary_id=itinerary_id)
+
+    def perform_create(self, serializer):
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        # Is the user the itinerary owner?
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        # Is the user a collaborator?
+        is_collaborator = Collaborator.objects.filter(
+            user=self.request.user, itinerary_id=itinerary_id).exists()
+
+        if not (is_owner or is_collaborator):
+            raise PermissionDenied(
+                "You do not have permission to add a document to this itinerary.")
+
+        itinerary = get_object_or_404(Itinerary, id=itinerary_id)
+
+        serializer.save(itinerary=itinerary, user=self.request.user)
 
 
 class CollaboratorListCreate(generics.ListCreateAPIView):
