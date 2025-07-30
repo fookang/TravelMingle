@@ -19,9 +19,6 @@ class Itinerary(models.Model):
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    collaborators = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name='collaborating_itineraries'
-    )
 
     def __str__(self):
         return self.title

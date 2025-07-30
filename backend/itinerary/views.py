@@ -1,11 +1,14 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Itinerary, ItineraryDay, Activity
-from .serializers import ItinerarySerializer, ItineraryDaySerializer, ActivitySerializer
+from rest_framework.permissions import IsAuthenticated, BasePermission
+from .models import Itinerary, ItineraryDay, Activity, Document, Collaborator
+from .serializers import ItinerarySerializer, ItineraryDaySerializer, ActivitySerializer, DocumentSerializer, CollaboratorSerializer
 from django.shortcuts import get_object_or_404
-
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
+
+
 class ItineraryListCreate(generics.ListCreateAPIView):
     serializer_class = ItinerarySerializer
     permission_classes = [IsAuthenticated]
@@ -27,21 +30,95 @@ class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
         return Itinerary.objects.filter(user=self.request.user)
 
 
+class IsCollaborator(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in ['POST', 'PUT', 'PATCH']:
+            itinerary_id = request.data.get('itinerary')
+            return Collaborator.objects.filter(user=request.user, itinerary_id=itinerary_id).exists()
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        return Collaborator.objects.filter(user=request.user, itinerary=obj.itinerary_id).exists()
+
+
+class DocumentListCreate(generics.ListCreateAPIView):
+    serializer_class = DocumentSerializer
+    permission_classes = [IsAuthenticated, IsCollaborator]
+
+    def get_queryset(self):
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        # Is the user the itinerary owner?
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        # Is the user a collaborator?
+        is_collaborator = Collaborator.objects.filter(
+            user=self.request.user, itinerary_id=itinerary_id).exists()
+
+        if not (is_owner or is_collaborator):
+            return Document.objects.none()
+
+        return Document.objects.filter(itinerary_id=itinerary_id)
+
+
+class CollaboratorListCreate(generics.ListCreateAPIView):
+    serializer_class = CollaboratorSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        itinerary_id = self.kwargs.get("itinerary_id")
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary_id=itinerary_id, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise Http404
+        return Collaborator.objects.filter(itinerary_id=itinerary_id)
+
+    def perform_create(self, serializer):
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        # Only owner can add collaborators
+        itinerary = get_object_or_404(
+            Itinerary, id=itinerary_id, user=self.request.user)
+
+        serializer.save(itinerary=itinerary)
+
+
 class ItineraryDayListCreate(generics.ListCreateAPIView):
     serializer_class = ItineraryDaySerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        itinerary = get_object_or_404(
-            Itinerary,
-            id=self.kwargs.get("itinerary_id"), user=self.request.user)
-        return ItineraryDay.objects.filter(itinerary=itinerary)
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary_id=itinerary_id, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise Http404
+        return ItineraryDay.objects.filter(itinerary_id=itinerary_id)
 
     def perform_create(self, serializer):
-        itinerary = get_object_or_404(
-            Itinerary,
-            id=self.kwargs["itinerary_id"],
-            user=self.request.user)
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary_id=itinerary_id, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise PermissionDenied(
+                "You do not have permission to add a day to this itinerary.")
+
+        itinerary = get_object_or_404(Itinerary, id=itinerary_id)
         serializer.save(itinerary=itinerary)
 
 
@@ -52,9 +129,19 @@ class ItineraryDayDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'day_id'
 
     def get_queryset(self):
-        itinerary = get_object_or_404(
-            Itinerary,
-            id=self.kwargs.get("itinerary_id"), user=self.request.user)
+        itinerary_id = self.kwargs.get("itinerary_id")
+
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=self.request.user).exists()
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary_id=itinerary_id, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise PermissionDenied(
+                "You do not have permission to add a day to this itinerary.")
+
+        itinerary = get_object_or_404(Itinerary, id=itinerary_id)
         return ItineraryDay.objects.filter(itinerary=itinerary)
 
 
@@ -63,15 +150,38 @@ class ActivityListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay,
-            id=self.kwargs["day_id"], itinerary__user=self.request.user)
+            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+
+        itinerary = day.itinerary
+
+        is_owner = itinerary.user == self.request.user
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary=itinerary, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise Http404
+
         return Activity.objects.filter(itinerary_day=day)
 
     def perform_create(self, serializer):
+        day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay,
-            id=self.kwargs["day_id"], itinerary__user=self.request.user)
+            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+
+        itinerary = day.itinerary
+
+        is_owner = itinerary.user == self.request.user
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary=itinerary, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise PermissionDenied(
+                "You do not have permission to add an activity to this itinerary.")
+
         serializer.save(itinerary_day=day)
 
 
@@ -82,7 +192,18 @@ class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'activity_id'
 
     def get_queryset(self):
+        day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay,
-            id=self.kwargs["day_id"], itinerary__user=self.request.user)
+            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+
+        itinerary = day.itinerary
+
+        is_owner = itinerary.user == self.request.user
+
+        is_collaborator = Collaborator.objects.filter(
+            itinerary=itinerary, user=self.request.user).exists()
+
+        if not (is_owner or is_collaborator):
+            raise Http404
+
         return Activity.objects.filter(itinerary_day=day)
