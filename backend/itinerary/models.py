@@ -4,7 +4,7 @@ from django.conf import settings
 
 def document_path(instance, filename):
     ext = filename.split('.')[-1]
-    filename = f"{instance.user.username}_{instance.itinerary.id}_{instance.doc_type}.{ext}"
+    filename = f"{instance.user.id}_{instance.itinerary.id}_{instance.doc_type}.{ext}"
     return f"documents/{filename}"
 
 
@@ -36,7 +36,7 @@ class Collaborator(models.Model):
 
 
 class Document(models.Model):
-    DOCUMNET_TYPES = [
+    DOCUMENT_TYPES = [
         ('passport', 'Passport'),
         ('visa', 'Visa'),
         ('flight', 'Flight'),
@@ -45,9 +45,28 @@ class Document(models.Model):
     itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    doc_type = models.CharField(max_length=20, choices=DOCUMNET_TYPES)
+    doc_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     file = models.FileField(upload_to=document_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('itinerary', 'user', 'doc_type')
+
+    def save(self, *args, **kwargs):
+        try:
+            old_doc = Document.objects.get(
+                user=self.user,
+                itinerary=self.itinerary,
+                doc_type=self.doc_type
+            )
+            if old_doc.pk != self.pk:
+                if old_doc.file:
+                    old_doc.file.delete(save=False)
+                old_doc.delete()
+        except Document.DoesNotExist:
+            pass
+
+        return super().save(*args, **kwargs)
 
 
 class ItineraryDay(models.Model):
