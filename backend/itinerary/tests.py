@@ -1,6 +1,6 @@
 from rest_framework import status
 from django.urls import reverse
-from .models import Itinerary, ItineraryDay, Activity, Collaborator
+from .models import Itinerary, ItineraryDay, Activity, Collaborator, Document
 from rest_framework.test import APITestCase, APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -280,6 +280,16 @@ class TestDocumentAPI(APITestCase):
         self.itinerary = Itinerary.objects.create(
             user=self.owner, title='Japan Trip', start_date='2024-07-01', end_date='2024-07-14')
 
+        self.collaborator = User.objects.create_user(
+            username='collaborator',
+            password='supersecurepassword',
+            email='collaborator@gmail.com',
+            first_name='collaborator',
+            last_name='user'
+        )
+        Collaborator.objects.create(
+            user=self.collaborator, itinerary=self.itinerary)
+
     def test_owner_add_document(self):
         url = reverse('documents', kwargs={
             'itinerary_id': self.itinerary.id
@@ -304,21 +314,9 @@ class TestDocumentAPI(APITestCase):
             format='multipart'
         )
 
-        print(response.data)
-
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-
     def test_collaborator_add_document(self):
-        self.collaborator = User.objects.create_user(
-            username='collaborator',
-            password='supersecurepassword',
-            email='collaborator@gmail.com',
-            first_name='collaborator',
-            last_name='user'
-        )
-        Collaborator.objects.create(
-            user=self.collaborator, itinerary=self.itinerary)
         url = reverse('documents', kwargs={
             'itinerary_id': self.itinerary.id
         })
@@ -341,6 +339,50 @@ class TestDocumentAPI(APITestCase):
             data,
             format='multipart'
         )
-        print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_owner_list_document(self):
+        url = reverse('documents', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        fake_file = SimpleUploadedFile(
+            "passport.pdf", b"fake-content", content_type="application/pdf")
+
+        Document.objects.create(
+            user=self.owner,
+            itinerary=self.itinerary,
+            doc_type="passport",
+            file=fake_file
+        )
+        Document.objects.create(
+            user=self.collaborator,
+            itinerary=self.itinerary,
+            doc_type="passport",
+            file=fake_file
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_collaborator_list_document(self):
+        url = reverse('documents', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        fake_file = SimpleUploadedFile(
+            "passport.pdf", b"fake-content", content_type="application/pdf")
+
+        Document.objects.create(
+            user=self.owner,
+            itinerary=self.itinerary,
+            doc_type="passport",
+            file=fake_file
+        )
+        Document.objects.create(
+            user=self.collaborator,
+            itinerary=self.itinerary,
+            doc_type="passport",
+            file=fake_file
+        )
+        self.client.force_authenticate(user=self.collaborator)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
