@@ -24,8 +24,15 @@ class ItinerarySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class UserCollaboratorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
 class CollaboratorSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)
+    user = UserCollaboratorSerializer(read_only=True)
 
     class Meta:
         model = Collaborator
@@ -44,7 +51,7 @@ class CollaboratorSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = self.context['collaborator_user'] = user
+        user = self.context['collaborator_user']
         itinerary = validated_data['itinerary']
 
         if itinerary.user == user:

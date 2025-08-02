@@ -1,7 +1,9 @@
 from rest_framework import status
 from django.urls import reverse
-from .models import Itinerary, ItineraryDay, Activity
+from .models import Itinerary, ItineraryDay, Activity, Collaborator
 from rest_framework.test import APITestCase, APIClient
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -161,3 +163,184 @@ class ItineraryAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Activity.objects.filter(
             id=self.activity.id).exists())
+
+
+class TestCollaboratorAPI(APITestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username='owner', password='supersecurepassword',
+            email='owner@gmail.com',
+            first_name='owner',
+            last_name='user'
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.owner)
+        self.itinerary = Itinerary.objects.create(
+            user=self.owner, title='Japan Trip', start_date='2024-07-01', end_date='2024-07-14')
+        self.collaborator = User.objects.create_user(
+            username='collaborator',
+            password='supersecurepassword',
+            email='collaborator@gmail.com',
+            first_name='collaborator',
+            last_name='user'
+        )
+
+    def test_owner_can_add_collaborator(self):
+        url = reverse('itinerary-collaborators', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        data = {
+            'email': 'collaborator@gmail.com'
+        }
+        response = self.client.post(
+            url,
+            data,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['user']
+                         ['username'], self.collaborator.username)
+        self.assertTrue(
+            Collaborator.objects.filter(
+                user__email='collaborator@gmail.com',
+                itinerary=self.itinerary
+            ).exists()
+        )
+        print(response.data)
+
+    def test_wrong_email(self):
+        url = reverse('itinerary-collaborators', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        data = {
+            'email': 'collaboratorr@gmail.com'
+        }
+        response = self.client.post(
+            url,
+            data,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        print(response.data)
+
+    def test_collaborator_cannot_add_collaborator(self):
+        self.collaborator2 = User.objects.create_user(
+            username='collaborator2',
+            password='supersecurepassword',
+            email='collaborator2@gmail.com',
+            first_name='collaborator',
+            last_name='user'
+        )
+        Collaborator.objects.create(
+            user=self.collaborator, itinerary=self.itinerary)
+
+        self.client.force_authenticate(user=self.collaborator)
+
+        url = reverse('itinerary-collaborators', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        data = {
+            'email': 'collaborator2@gmail.com'
+        }
+        response = self.client.post(
+            url,
+            data,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        print(response.data)
+
+    def test_list_collaborator(self):
+        Collaborator.objects.create(
+            user=self.collaborator, itinerary=self.itinerary)
+
+        url = reverse('itinerary-collaborators', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+        response = self.client.get(url)
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=self.collaborator)
+        response = self.client.get(url)
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class TestDocumentAPI(APITestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username='owner', password='supersecurepassword',
+            email='owner@gmail.com',
+            first_name='owner',
+            last_name='user'
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.owner)
+        self.itinerary = Itinerary.objects.create(
+            user=self.owner, title='Japan Trip', start_date='2024-07-01', end_date='2024-07-14')
+
+    def test_owner_add_document(self):
+        url = reverse('documents', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+
+        pdf_content = b'%PDF-1.4 fake content for testing\n%%EOF'
+
+        fake_pdf = SimpleUploadedFile(
+            "test.pdf",               # file name
+            pdf_content,              # file content (bytes)
+            content_type="application/pdf"
+        )
+
+        data = {
+            'doc_type': 'passport',
+            "file": fake_pdf
+        }
+
+        response = self.client.post(
+            url,
+            data,
+            format='multipart'
+        )
+
+        print(response.data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+    def test_collaborator_add_document(self):
+        self.collaborator = User.objects.create_user(
+            username='collaborator',
+            password='supersecurepassword',
+            email='collaborator@gmail.com',
+            first_name='collaborator',
+            last_name='user'
+        )
+        Collaborator.objects.create(
+            user=self.collaborator, itinerary=self.itinerary)
+        url = reverse('documents', kwargs={
+            'itinerary_id': self.itinerary.id
+        })
+
+        pdf_content = b'%PDF-1.4 fake content for testing\n%%EOF'
+
+        fake_pdf = SimpleUploadedFile(
+            "test.pdf",               # file name
+            pdf_content,              # file content (bytes)
+            content_type="application/pdf"
+        )
+
+        data = {
+            'doc_type': 'passport',
+            "file": fake_pdf
+        }
+        self.client.force_authenticate(user=self.collaborator)
+        response = self.client.post(
+            url,
+            data,
+            format='multipart'
+        )
+        print(response.data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -15,16 +15,13 @@ class ItineraryListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         owned = Itinerary.objects.filter(user=self.request.user)
-        
+
         collaborating_ids = Collaborator.objects.filter(
             user=self.request.user).values_list('itinerary_id', flat=True)
-        
+
         collaborating = Itinerary.objects.filter(id__in=collaborating_ids)
-        
+
         return (owned | collaborating)
-
-
-        
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -40,20 +37,20 @@ class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
         return Itinerary.objects.filter(user=self.request.user)
 
 
-class IsCollaborator(BasePermission):
+class IsCollaboratorOwner(BasePermission):
     def has_permission(self, request, view):
-        if request.method in ['POST', 'PUT', 'PATCH']:
-            itinerary_id = request.data.get('itinerary')
-            return Collaborator.objects.filter(user=request.user, itinerary_id=itinerary_id).exists()
-        return True
+        itinerary_id = view.kwargs.get("itinerary_id")
+        is_collaborator = Collaborator.objects.filter(
+            user=request.user, itinerary_id=itinerary_id).exists()
+        is_owner = Itinerary.objects.filter(
+            id=itinerary_id, user=request.user).exists()
 
-    def has_object_permission(self, request, view, obj):
-        return Collaborator.objects.filter(user=request.user, itinerary=obj.itinerary_id).exists()
+        return is_owner or is_collaborator
 
 
 class DocumentListCreate(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
-    permission_classes = [IsAuthenticated, IsCollaborator]
+    permission_classes = [IsAuthenticated, IsCollaboratorOwner]
 
     def get_queryset(self):
         itinerary_id = self.kwargs.get("itinerary_id")
@@ -67,7 +64,8 @@ class DocumentListCreate(generics.ListCreateAPIView):
             user=self.request.user, itinerary_id=itinerary_id).exists()
 
         if not (is_owner or is_collaborator):
-            return Document.objects.none()
+            raise PermissionDenied(
+                "You do not have permission to access the document to this itinerary.")
 
         return Document.objects.filter(itinerary_id=itinerary_id)
 
@@ -112,7 +110,10 @@ class CollaboratorListCreate(generics.ListCreateAPIView):
 
         # Only owner can add collaborators
         itinerary = get_object_or_404(
-            Itinerary, id=itinerary_id, user=self.request.user)
+            Itinerary, id=itinerary_id)
+
+        if itinerary.user != self.request.user:
+            raise PermissionDenied("Only the owner can add collaborators.")
 
         serializer.save(itinerary=itinerary)
 
