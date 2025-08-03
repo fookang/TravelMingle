@@ -66,6 +66,8 @@ class CollaboratorSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    user = UserCollaboratorSerializer(read_only=True)
+
     class Meta:
         model = Document
         fields = ['id', 'itinerary', 'user', 'doc_type', 'file', 'uploaded_at']

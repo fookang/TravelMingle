@@ -6,16 +6,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../components/Header";
 import { Picker } from "@react-native-picker/picker";
 import * as DocumentPicker from "expo-document-picker";
+import { useRouter } from "expo-router";
 
 const addDocument = () => {
   const { itinerary } = useItinerary();
   const [docType, setDocType] = useState("");
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const DOC_TPYE = ["passport", "visa", "flight", "insurance"];
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("doc_type", docType);
 
@@ -38,9 +42,12 @@ const addDocument = () => {
       );
       if (response.status === 201) {
         console.log(response.data);
+        router.back();
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,24 +61,34 @@ const addDocument = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles}>
       <Header title="Add Document" />
       <View>
-        <Text>Document Type:</Text>
-        <Picker
-          selectedValue={docType}
-          onValueChange={(item) => setDocType(item)}
+        <View>
+          <Text>Document Type:</Text>
+          <Picker
+            selectedValue={docType}
+            onValueChange={(item) => setDocType(item)}
+          >
+            <Picker.Item label="Select Document Type" value="" />
+            {DOC_TPYE.map((type) => (
+              <Picker.Item key={type} label={type.toUpperCase()} value={type} />
+            ))}
+          </Picker>
+        </View>
+        <View>
+          <Text>{file ? file["name"] : "No file selected"}</Text>
+          <TouchableOpacity onPress={() => handlePickFile()}>
+            <Text>Choose File</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={handleSubmit}
+          style={[styles.button, loading && styles.buttonDisabled]}
         >
-          <Picker.Item label="Select Document Type" value="" />
-          {DOC_TPYE.map((type) => (
-            <Picker.Item key={type} label={type.toUpperCase()} value={type} />
-          ))}
-        </Picker>
-      </View>
-      <View>
-        <Text>{file ? file["name"] : "No file selected"}</Text>
-        <TouchableOpacity onPress={() => handlePickFile()}>
-          <Text>Choose File</Text>
+          <Text style={styles.buttonText}>
+            {loading ? "Submitting" : "Submit"}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -80,4 +97,30 @@ const addDocument = () => {
 
 export default addDocument;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 10,
+  },
+  button: {
+    marginTop: 24,
+    width: "100%",
+    backgroundColor: "#1866E3",
+    paddingVertical: 14,
+    alignItems: "center",
+    borderRadius: 10,
+    shadowColor: "#1866E3",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  buttonDisabled: {
+    backgroundColor: "#A7B4C3",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+});
