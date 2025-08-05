@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
 import api from "../services/api";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = createContext();
 
@@ -100,10 +101,48 @@ export const AuthProvider = ({ children }) => {
 
   const login = () => setIsAuthenticated(true);
 
+  const deleteUser = async () => {
+    Alert.alert(
+      "Are you sure you want to delete your account",
+      "If you delete your account, all saved data will be lost",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              const response = await api.delete("/user/delete/");
+              if (response.status === 204) {
+                await Promise.all([
+                  SecureStore.deleteItemAsync(ACCESS_TOKEN),
+                  SecureStore.deleteItemAsync(REFRESH_TOKEN),
+                  AsyncStorage.removeItem("username"),
+                  AsyncStorage.removeItem("biometric"),
+                ]);
+
+                setIsAuthenticated(false);
+                router.replace("/home");
+              }
+            } catch (error) {
+              console.log(error);
+              Alert.alert("Delete failed", "Please try again.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) return null;
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, deleteUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

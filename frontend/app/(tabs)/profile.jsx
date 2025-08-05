@@ -8,11 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 const profile = () => {
   const router = useRouter();
 
-  const { logout } = useAuth();
+  const { logout, deleteUser } = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>
-      
       <ProtectedRoute>
         <View style={styles.content}>
           <TouchableOpacity
@@ -39,15 +38,12 @@ const profile = () => {
             <Text style={styles.text}>Payment Option</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.push("/(app)/profile/deleteAccount")}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={() => deleteUser()} style={styles.button}>
             <Ionicons name="trash-outline" style={styles.icons} />
             <Text style={styles.text}>Delete Account</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={logout} style={styles.button}>
+          <TouchableOpacity onPress={() => logout()} style={styles.button}>
             <Ionicons name="log-out-outline" style={styles.icons} />
             <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>
