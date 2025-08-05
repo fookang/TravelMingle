@@ -50,22 +50,30 @@ const document = () => {
     }
   };
 
+  const capitalizeFirst = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   useEffect(() => {
     getDocument();
   }, []);
 
   const renderItem = (item, name) => (
-    <View key={item.id}>
-      <Text>{item.doc_type}</Text>
-      <TouchableOpacity onPress={() => Linking.openURL(item.file)}>
-        <Text>View File</Text>
+    <View key={item.id} style={styles.documentContainer}>
+      <Text style={styles.docType}>{capitalizeFirst(item.doc_type)}</Text>
+      <TouchableOpacity
+        onPress={() => Linking.openURL(item.file)}
+        style={styles.viewButton}
+      >
+        <Text style={styles.viewButtonText}>View File</Text>
       </TouchableOpacity>
     </View>
   );
 
   const renderUser = ([name, docs]) => (
-    <View key={name}>
-      <Text>{name}</Text>
+    <View key={name} style={styles.user}>
+      <Text style={styles.userName}>{name}</Text>
       {docs.map((item) => renderItem(item, name))}
     </View>
   );
@@ -79,7 +87,6 @@ const document = () => {
       );
       const { uri } = await downloadResumable.downloadAsync();
       console.log("Finished downloading to ", uri);
-    
     } catch (error) {
       console.log("Error", error);
     }
@@ -89,13 +96,15 @@ const document = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Header title="Doucment" />
-        {Object.keys(document).length === 0 ? (
-          <Text>No document added</Text>
-        ) : (
-          Object.entries(document).map(([name, docs]) =>
-            renderUser([name, docs])
-          )
-        )}
+        <View style={styles.content}>
+          {Object.keys(document).length === 0 ? (
+            <Text>No document added</Text>
+          ) : (
+            Object.entries(document).map(([name, docs]) =>
+              renderUser([name, docs])
+            )
+          )}
+        </View>
       </ScrollView>
       <FloatingButton
         url="itineraries/document/addDocument"
@@ -111,5 +120,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 16,
+  },
+  content: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  user: {
+    marginBottom: 24,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 12,
+  },
+  documentContainer: {
+    backgroundColor: "#f2f4f8",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  docType: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "black",
+  },
+  viewButton: {
+    backgroundColor: "#2b2b2bff",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 6,
+  },
+  viewButtonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });

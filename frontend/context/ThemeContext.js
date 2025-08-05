@@ -5,19 +5,21 @@ import { Colors } from "../constants/Colors";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [colorScheme, setColorScheme] = useState(
-    Appearance.getColorScheme() ?? "light"
-  );
+  // const [colorScheme, setColorScheme] = useState(
+  //   Appearance.getColorScheme() ?? "light"
+  // );
 
-  useEffect(() => {
-    const sub = Appearance.addChangeListener(({ colorScheme }) => {
-      setColorScheme(colorScheme ?? "light");
-    });
-    return () => sub.remove();
-  }, []);
+  // useEffect(() => {
+  //   const sub = Appearance.addChangeListener(({ colorScheme }) => {
+  //     setColorScheme(colorScheme ?? "light");
+  //   });
+  //   return () => sub.remove();
+  // }, []);
 
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
+  // const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
 
+  const [colorScheme, setColorScheme] = useState("light");
+  const theme = Colors.light;
   return (
     <ThemeContext.Provider
       value={{

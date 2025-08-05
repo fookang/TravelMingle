@@ -37,9 +37,9 @@ const ItineraryDetails = () => {
         >
           <Text style={styles.text}>Itinerary</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        {/* <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Finance</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
