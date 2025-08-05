@@ -36,7 +36,7 @@ const createDay = () => {
     <SafeAreaView style={styles.container}>
       <Header title="Create new Itinerary Day" />
       <DayForm
-        handleCreate={handleCreate}
+        handleAction={handleCreate}
         start_date={start_date}
         end_date={end_date}
         loading={loading}

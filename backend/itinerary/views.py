@@ -182,7 +182,7 @@ class ActivityListCreate(generics.ListCreateAPIView):
     def get_queryset(self):
         day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+            ItineraryDay.objects.select_related('itinerary'), id=day_id)
 
         itinerary = day.itinerary
 
@@ -199,7 +199,7 @@ class ActivityListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+            ItineraryDay.objects.select_related('itinerary'), id=day_id)
 
         itinerary = day.itinerary
 
@@ -224,7 +224,7 @@ class ActivityDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         day_id = self.kwargs["day_id"]
         day = get_object_or_404(
-            ItineraryDay.objects.select_related('itinerary').get(id=day_id))
+            ItineraryDay.objects.select_related('itinerary'), id=day_id)
 
         itinerary = day.itinerary
 

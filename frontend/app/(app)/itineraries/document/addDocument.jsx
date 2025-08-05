@@ -61,7 +61,7 @@ const addDocument = () => {
   };
 
   return (
-    <SafeAreaView style={styles.conatiner}>
+    <SafeAreaView style={styles.container}>
       <Header title="Add Document" />
       <View style={styles.content}>
         <View style={styles.document}>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   fileSection: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   fileName: {
     color: "black",
@@ -161,24 +161,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button: {
-    marginTop: 24,
     width: "100%",
-    backgroundColor: "#1866E3",
-    paddingVertical: 14,
+    backgroundColor: "#007bff",
+    padding: 12,
     alignItems: "center",
-    borderRadius: 10,
-    shadowColor: "#1866E3",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    borderRadius: 8,
   },
   buttonDisabled: {
     backgroundColor: "#A7B4C3",
   },
   buttonText: {
-    color: "#fff",
+    color: "black",
     fontWeight: "bold",
-    fontSize: 16,
     letterSpacing: 0.5,
   },
 });
