@@ -61,26 +61,37 @@ const addDocument = () => {
   };
 
   return (
-    <SafeAreaView style={styles}>
+    <SafeAreaView style={styles.conatiner}>
       <Header title="Add Document" />
-      <View>
-        <View>
-          <Text>Document Type:</Text>
-          <Picker
-            selectedValue={docType}
-            onValueChange={(item) => setDocType(item)}
-          >
-            <Picker.Item label="Select Document Type" value="" />
-            {DOC_TPYE.map((type) => (
-              <Picker.Item key={type} label={type.toUpperCase()} value={type} />
-            ))}
-          </Picker>
+      <View style={styles.content}>
+        <View style={styles.document}>
+          <Text style={styles.documentLabel}>Document Type:</Text>
+          <View style={styles.picker}>
+            <Picker
+              selectedValue={docType}
+              onValueChange={(item) => setDocType(item)}
+            >
+              <Picker.Item label="Select Document Type" value="" />
+              {DOC_TPYE.map((type) => (
+                <Picker.Item
+                  key={type}
+                  label={type.toUpperCase()}
+                  value={type}
+                />
+              ))}
+            </Picker>
+          </View>
         </View>
-        <View>
-          <Text>{file ? file["name"] : "No file selected"}</Text>
-          <TouchableOpacity onPress={() => handlePickFile()}>
-            <Text>Choose File</Text>
+        <View style={styles.fileSection}>
+          <TouchableOpacity
+            onPress={() => handlePickFile()}
+            style={styles.chooseFileButton}
+          >
+            <Text style={styles.chooseFileButtonText}>Choose File</Text>
           </TouchableOpacity>
+          <Text style={styles.fileName}>
+            {file ? file["name"] : "No file selected"}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={handleSubmit}
@@ -101,6 +112,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
+  },
+  content: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  document: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  documentLabel: {
+    fontWeight: "500",
+    fontSize: 16,
+    color: "#333",
+    marginRight: 10,
+  },
+  picker: {
+    flex: 1,
+    backgroundColor: "#f1f4f7ff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    height: 35,
+    justifyContent: "center",
+  },
+  fileSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  fileName: {
+    color: "black",
+    fontSize: 15,
+  },
+  chooseFileButton: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    backgroundColor: "#f1f4f7ff",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    marginRight: 8,
+  },
+  chooseFileButtonText: {
+    color: "#222",
+    fontWeight: "500",
+    fontSize: 15,
   },
   button: {
     marginTop: 24,
