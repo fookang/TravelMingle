@@ -7,11 +7,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import api from "../../../services/api";
 import { formatDate, getDayNumber } from "../../../utils/Date";
-
 import { useItinerary } from "../../../context/ItineraryContext";
 import { itemStyle } from "../../../utils/styles/common";
 import { useTheme } from "../../../context/ThemeContext";
@@ -21,7 +20,7 @@ const ItineraryDetails = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = createStyles(theme);
-  const { itinerary, fetchItineraryDayList } = useItinerary();
+  const { itinerary } = useItinerary();
   const [itineraryDay, setItineraryDay] = useState([]);
 
   const fetchItinerary = async () => {

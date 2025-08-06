@@ -5,7 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import MapView, { Marker } from "react-native-maps";
 import GooglePlacesTextInput from "react-native-google-places-textinput";
 import DateTimePicker from "@react-native-community/datetimepicker";

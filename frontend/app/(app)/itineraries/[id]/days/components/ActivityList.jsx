@@ -2,8 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import { useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Linking } from "react-native";
-import { useTheme } from "../../context/ThemeContext";
-import { itemStyle } from "../../utils/styles/common";
+import { useTheme } from "../../../../../../context/ThemeContext";
+import { itemStyle } from "../../../../../../utils/styles/common";
 
 const ActivityList = ({ item, showToast, handleEdit, handleDelete }) => {
   const [menuVisible, setMenuVisible] = useState(false);

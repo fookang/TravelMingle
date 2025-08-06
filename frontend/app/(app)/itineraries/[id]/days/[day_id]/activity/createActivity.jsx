@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../../../components/Header";
 import api from "../../../../../../../services/api";
-import ActivityForm from "../../../../../../components/ActivityForm";
+import ActivityForm from "./components/ActivityForm";
 
 const createActivity = () => {
   const router = useRouter();

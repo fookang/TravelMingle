@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/Header";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatAsYYYYMMDD, displayDate } from "../../../utils/Date";
+import Input from "../../components/Input";
 
 const createItinerary = () => {
   const router = useRouter();
@@ -67,30 +68,22 @@ const createItinerary = () => {
     <SafeAreaView style={styles.container}>
       <Header title="Create new Itinerary" />
       <View style={styles.content}>
-        <View style={styles.input}>
-          <Text>
-            Title: <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            placeholder="Title"
-            value={title}
-            onChangeText={(text) => {
-              setTitle(text);
-              if (showTitleError) setShowTitleError(false);
-            }}
-            style={styles.inputText}
-          />
-        </View>
-
-        <View style={styles.input}>
-          <Text>Description: </Text>
-          <TextInput
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-            style={styles.inputText}
-          />
-        </View>
+        <Input
+          label="Title"
+          value={title}
+          required={true}
+          setValue={setTitle}
+          showError={showTitleError}
+          setShowError={setShowTitleError}
+          placeholder="Title"
+        />
+    
+        <Input
+          label="Description"
+          value={description}
+          setValue={setDescription}
+          placeholder="Description"
+        />
 
         <View>
           <TouchableOpacity onPress={() => setStartDateButton(true)}>

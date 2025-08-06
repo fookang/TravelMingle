@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "../../../../components/Header";
-import DayForm from "../../../../components/DayForm";
+import DayForm from "./components/DayForm";
 import api from "../../../../../services/api";
 
 const editDay = () => {

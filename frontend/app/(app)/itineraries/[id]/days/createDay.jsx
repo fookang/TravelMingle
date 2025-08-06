@@ -4,8 +4,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../../components/Header";
-
-import DayForm from "../../../../components/DayForm";
+import DayForm from "./components/DayForm";
 
 const createDay = () => {
   const router = useRouter();

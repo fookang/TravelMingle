@@ -12,7 +12,7 @@ import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import api from "../../../../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import ActivityList from "../../../../components/ActivityList";
+import ActivityList from "./components/ActivityList";
 import ShowToast from "../../../../components/ShowToast";
 import { useItinerary } from "../../../../../context/ItineraryContext";
 import FloatingButton from "../../../../components/FloatingButton";
