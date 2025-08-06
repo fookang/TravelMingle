@@ -30,13 +30,13 @@ const profile = () => {
             <Text style={styles.text}>Password & Security</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => router.push("/(app)/profile/paymentOption")}
             style={styles.button}
           >
             <Ionicons name="card-outline" style={styles.icons} />
             <Text style={styles.text}>Payment Option</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity onPress={() => deleteUser()} style={styles.button}>
             <Ionicons name="trash-outline" style={styles.icons} />
