@@ -17,6 +17,9 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import DateSelector from "./components/DateSelector";
+import Input from "../../components/Input";
+import ErrorText from "../../components/ErrorText";
 
 const ButtonReducer = (buttonState, action) => {
   switch (action.type) {
@@ -52,7 +55,7 @@ const ItineraryUpdate = () => {
       : undefined,
   });
 
-  const checkValid = (itineraryObj) => {
+  const checkTitle = (itineraryObj) => {
     if (itineraryObj.title === undefined) return true;
     if (itineraryObj.title.trim() === "") {
       return false;
@@ -63,7 +66,7 @@ const ItineraryUpdate = () => {
   const handleUpdate = async () => {
     try {
       setLoading(true);
-      if (checkValid(newItinerary)) {
+      if (checkTitle(newItinerary)) {
         const formatted = formatItinerary(newItinerary);
         console.log(JSON.stringify(formatted));
         await updateItinerary(itinerary.id, formatted);
@@ -82,107 +85,70 @@ const ItineraryUpdate = () => {
     <SafeAreaView style={styles.container}>
       <Header title="Edit Itinerary" />
       <View style={styles.content}>
-        <View style={styles.input}>
-          <Text style={styles.inputTitle}>Title:</Text>
-          <TextInput
-            defaultValue={itinerary.title}
-            value={newItinerary.title}
-            onChangeText={(value) => {
-              setNewItinerary((prev) => ({ ...prev, title: value }));
-              if (showTitleError && value.trim() !== "") setShowTitleError("");
-            }}
-            style={styles.inputText}
-          />
-        </View>
+        <Input
+          label="Title"
+          value={newItinerary.title}
+          setValue={(value) =>
+            setNewItinerary((prev) => ({ ...prev, title: value }))
+          }
+          required={true}
+          showError={showTitleError}
+          setShowError={setShowTitleError}
+          defaultValue={itinerary.title}
+        />
 
-        {showTitleError && (
-          <Text style={styles.errorText}>Title is required.</Text>
-        )}
+        <ErrorText text="Title is required." display={showTitleError} />
 
-        <View style={styles.input}>
-          <Text style={styles.inputTitle}>Description:</Text>
-          <TextInput
-            defaultValue={itinerary.description || ""}
-            value={newItinerary.description}
-            onChangeText={(value) => {
-              setNewItinerary((prev) => ({ ...prev, description: value }));
-            }}
-            style={styles.inputText}
-          />
-        </View>
+        <Input
+          label="Description"
+          value={newItinerary.description}
+          setValue={(value) =>
+            setNewItinerary((prev) => ({ ...prev, description: value }))
+          }
+          defaultValue={itinerary.description || ""}
+        />
+
         <View style={styles.dateContainer}>
-          <View style={styles.date}>
-            <TouchableOpacity
-              onPress={() => buttonDispatch({ type: "toggleStart" })}
-            >
-              <Text style={styles.dateTitle}>Start</Text>
-              <View style={styles.dateDisplay}>
-                <Text style={styles.dateText}>
-                  {newItinerary.start_date
-                    ? displayDate(newItinerary.start_date)
-                    : displayDate(itinerary.start_date)}
-                </Text>
-                <Ionicons name="calendar-clear-outline" size={20} />
-              </View>
-              {buttonState.startDateButton && (
-                <DateTimePicker
-                  value={
-                    newItinerary.start_date
-                      ? newItinerary.start_date
-                      : parseYYYYMMDD(itinerary.start_date)
-                  }
-                  mode="date"
-                  display="default"
-                  minimumDate={new Date()}
-                  onChange={(event, selectedDate) => {
-                    if (selectedDate) {
-                      setNewItinerary((prev) => ({
-                        ...prev,
-                        start_date: selectedDate,
-                      }));
-                      buttonDispatch({ type: "toggleStart" });
-                    }
-                  }}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.date}>
-            <TouchableOpacity
-              onPress={() => buttonDispatch({ type: "toggleEnd" })}
-            >
-              <Text style={styles.dateTitle}>End</Text>
-              <View style={styles.dateDisplay}>
-                <Text style={styles.dateText}>
-                  {newItinerary.end_date
-                    ? displayDate(newItinerary.end_date)
-                    : displayDate(itinerary.end_date)}
-                </Text>
-                <Ionicons name="calendar-clear-outline" size={20} />
-              </View>
-              {buttonState.endDateButton && (
-                <DateTimePicker
-                  value={
-                    newItinerary.end_date
-                      ? newItinerary.end_date
-                      : parseYYYYMMDD(itinerary.end_date)
-                  }
-                  mode="date"
-                  display="default"
-                  minimumDate={new Date()}
-                  onChange={(event, selectedDate) => {
-                    if (selectedDate) {
-                      setNewItinerary((prev) => ({
-                        ...prev,
-                        end_date: selectedDate,
-                      }));
-                      buttonDispatch({ type: "toggleEnd" });
-                    }
-                  }}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
+          <DateSelector
+            label="Start"
+            date={
+              newItinerary.start_date
+                ? newItinerary.start_date
+                : parseYYYYMMDD(itinerary.start_date)
+            }
+            onPress={() => buttonDispatch({ type: "toggleStart" })}
+            isOpen={buttonState.startDateButton}
+            minimumDate={new Date()}
+            onChange={(event, selectedDate) => {
+              if (selectedDate) {
+                setNewItinerary((prev) => ({
+                  ...prev,
+                  start_date: selectedDate,
+                }));
+                buttonDispatch({ type: "toggleStart" });
+              }
+            }}
+          />
+          <DateSelector
+            label="End"
+            date={
+              newItinerary.end_date
+                ? newItinerary.end_date
+                : parseYYYYMMDD(itinerary.end_date)
+            }
+            onPress={() => buttonDispatch({ type: "toggleEnd" })}
+            isOpen={buttonState.endDateButton}
+            minimumDate={new Date()}
+            onChange={(event, selectedDate) => {
+              if (selectedDate) {
+                setNewItinerary((prev) => ({
+                  ...prev,
+                  end_date: selectedDate,
+                }));
+                buttonDispatch({ type: "toggleEnd" });
+              }
+            }}
+          />
         </View>
 
         <TouchableOpacity
@@ -209,46 +175,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 10,
   },
-  input: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  inputTitle: {
-    fontSize: 15,
-  },
-  inputText: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    marginLeft: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
   dateContainer: {
     flexDirection: "row",
     marginTop: 15,
     marginBottom: 20,
-  },
-  date: {
-    width: "50%",
-    paddingRight: 20,
-  },
-  dateTitle: {
-    color: "#383535ff",
-    fontSize: 15,
-  },
-  dateDisplay: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-  },
-  dateText: {
-    fontSize: 15,
-    fontWeight: "bold",
   },
   button: {
     width: "100%",

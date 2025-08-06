@@ -54,6 +54,7 @@ export const ItineraryProvider = ({ children }) => {
         description: response.data["description"],
         start_date: response.data["start_date"],
         end_date: response.data["end_date"],
+        user: response.data["user"],
       });
     } catch (error) {
       console.log(error);

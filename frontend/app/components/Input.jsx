@@ -8,6 +8,7 @@ const Input = ({
   showError,
   setShowError,
   placeholder,
+  defaultValue = "",
 }) => {
   return (
     <View style={styles.inputContainer}>
@@ -22,6 +23,7 @@ const Input = ({
           if (showError) setShowError(false);
         }}
         style={[styles.inputText, showError && { borderColor: "red" }]}
+        {...(defaultValue && { defaultValue })}
       />
     </View>
   );
