@@ -27,16 +27,6 @@ class ItineraryListCreate(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ItinerarySerializer
-    permission_classes = [IsAuthenticated]
-    lookup_field = 'id'
-    lookup_url_kwarg = 'itinerary_id'
-
-    def get_queryset(self):
-        return Itinerary.objects.filter(user=self.request.user)
-
-
 class IsCollaboratorOwner(BasePermission):
     def has_permission(self, request, view):
         itinerary_id = view.kwargs.get("itinerary_id")
@@ -46,6 +36,23 @@ class IsCollaboratorOwner(BasePermission):
             id=itinerary_id, user=request.user).exists()
 
         return is_owner or is_collaborator
+
+
+class ItineraryDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ItinerarySerializer
+    permission_classes = [IsAuthenticated, IsCollaboratorOwner]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'itinerary_id'
+
+    def get_queryset(self):
+        itinerary_id = self.kwargs.get("itinerary_id")
+        return Itinerary.objects.filter(id=itinerary_id)
+    
+    def destroy(self, request, *args, **kwargs):
+        itinerary = self.get_object()
+        if itinerary.user != request.user:
+            raise PermissionDenied("Only the owner can delete this itinerary.")
+        return super().destroy(request, *args, **kwargs)
 
 
 class DocumentListCreate(generics.ListCreateAPIView):

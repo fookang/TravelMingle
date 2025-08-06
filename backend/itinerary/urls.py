@@ -14,7 +14,7 @@ urlpatterns = [
     path('<int:itinerary_id>/documents/',
          views.DocumentListCreate.as_view(), name='documents'),
 
-    path('itineraries/<int:itinerary_id>/collaborators/',
+    path('<int:itinerary_id>/collaborators/',
          views.CollaboratorListCreate.as_view(), name='itinerary-collaborators'),
 
 

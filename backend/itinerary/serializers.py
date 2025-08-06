@@ -4,7 +4,16 @@ from .models import Itinerary, ItineraryDay, Activity, Document, Collaborator
 User = get_user_model()
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name',
+                  'last_name', 'email', 'avatar']
+
+
 class ItinerarySerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Itinerary
         fields = [
@@ -24,15 +33,9 @@ class ItinerarySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class UserCollaboratorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']
-
-
 class CollaboratorSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)
-    user = UserCollaboratorSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Collaborator
@@ -66,7 +69,7 @@ class CollaboratorSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
-    user = UserCollaboratorSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Document

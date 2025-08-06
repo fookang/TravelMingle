@@ -57,7 +57,7 @@ const Login = () => {
       await AsyncStorage.setItem("username", user);
 
       login();
-      router.push("/(tabs)/profile");
+      router.push("/(tabs)/home");
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.detail || "Invalid credentials");
